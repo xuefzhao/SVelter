@@ -11,23 +11,40 @@ This software is designed to identify both simple and complex rearrangements fro
 ##Usage
 SVelter.py  [options]  [parameters]
 
-###Options:
- * `NullModel`
- * `BPSearch`
- * `BPIntegrate`
- * `SVPredict`
- * `SVIntegrate`
+## Quick Start
+Download and Install
+```
+git clone git@github.com:mills-lab/svelter.git
+cd svelter
+chmod +x SVelter.py
+```
+Index Reference genome
+``` 
+SVelter.py Index --reference reference.fa --workdir /working/directory --exclude exclude.ref.bed --copyneutral CN2.ref.bed --svelter-path SVelter/ 
+```
+Run SVelter with its default setting:
+```
+SVelter.py --sample /absolute/path/of/sample.bam --workdir /working/directory
+```
 
 
 
-###Parameters:
+##Options:
+```
+  NullModel
+  BPSearch
+  BPIntegrate
+  SVPredict
+  SVIntegrate
+```
 
+##Parameters:
 
 ####Required:
-`--workdir`, writable working directory.
 
-`--sample`, input alignment file in bam format
-
+  `--workdir`, writable working directory.
+  
+  `--sample`, input alignment file in bam format
 
 ####Optional:
 
@@ -71,35 +88,12 @@ SVelter.py  [options]  [parameters]
 
 
 
-## Quick Start
+##For faster processing, SVelter could run with multiple cores:
 
-##Download and Install
-
+####Step1: Build null models:
 ```
-git clone git@github.com:mills-lab/svelter.git
-cd svelter
-chmod +x SVelter.py
-```
-
-##Index Reference genome
-
-``` 
-SVelter.py Index --reference reference.fa --workdir /working/directory --exclude exclude.ref.bed --copyneutral CN2.ref.bed --svelter-path SVelter/ 
-```
-
-##Run SVelter with its default setting:
-
-```
-SVelter.py --sample /absolute/path/of/sample.bam --workdir /working/directory
-```
-
-
-For faster processing, SVelter could run with multiple cores:
-
-Step1: Build null models:
-
 SVelter.py NullModel --sample /absolute/path/of/sample.bam --workdir /working/directory
-
+```
 Optional Parameters:
 
 --chromosome, name of chromosome to run. should match chromosome name in bam file
