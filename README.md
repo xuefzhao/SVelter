@@ -8,9 +8,6 @@ This software is designed to identify both simple and complex rearrangements fro
 * R 
 * samtools: http://samtools.sourceforge.net/
 
-##Usage
-SVelter.py  [options]  [parameters]
-
 ## Quick Start
 Download and Install
 ```
@@ -27,7 +24,8 @@ Run SVelter with its default setting:
 SVelter.py --sample /absolute/path/of/sample.bam --workdir /working/directory
 ```
 
-
+##Usage
+SVelter.py  [options]  [parameters]
 
 ##Options:
 ```
@@ -94,6 +92,7 @@ SVelter.py --sample /absolute/path/of/sample.bam --workdir /working/directory
 ```
 SVelter.py NullModel --sample /absolute/path/of/sample.bam --workdir /working/directory
 ```
+
 Optional Parameters:
 
 --chromosome, name of chromosome to run. should match chromosome name in bam file
@@ -115,9 +114,10 @@ Optional Parameters:
 --split-min-len, the minumum length of clip read considered as split  (default:10% of read length)
 
 
-Step2: Search for Breakpoints:
-
+####Step2: Search for Breakpoints:
+```
 SVelter.py BPSearch --sample /absolute/path/of/sample.bam --workdir /working/directory
+```
 
 Optional Parameters:
 
@@ -138,10 +138,10 @@ Optional Parameters:
 --qc-map-cutoff, the minimum mapping quality required for a breakpoint to be reported (default: 0.0)
 
 
-Step3: Cluster Breakpoints:
-
+####Step3: Cluster Breakpoints:
+```
 SVelter.py BPIntegrate --sample /absolute/path/of/sample.bam --workdir /working/directory
-
+```
 Optional Parameters:
 
 --chromosome, name of chromosome to run. should match chromosome name in bam file
@@ -149,10 +149,10 @@ Optional Parameters:
 --batch, specify number of structures in each separate file (if 0, output files will be calssified by chromosomes; default, all BP clustered will be integrated in one txt file)
 
 
-Step4: Resolve complex structural variants:
-
+####Step4: Resolve complex structural variants:
+```
 SVelter.py SVPredict --sample sample.bam --workdir /working/directory --bp-file input/file/containing/clustered/bps
- 
+ ```
 Optional Parameters:
 
 --num-iteration, maximum number of iterations per structure will run
@@ -164,10 +164,10 @@ Optional Parameters:
 --qc-align, minimum alignment quality required for mapped reads in bam file (default: 20)
 
 
-Step5: Write output in vcf format:
-
+####Step5: Write output in vcf format:
+```
 SVelter.py SVIntegrate --workdir /working/directory --prefix output  --input-path path/of/output/from/Step4
-  
+```
 Optional Parameters:
 
 --qc-structure, minimum quality score of a resolved structure to be considered as PASS and included in the output vcf file
