@@ -70,25 +70,28 @@ SVelter.py  [options]  [parameters]
 
 
 
-Reference genome should be indexed first:
-
-``` SVelter.py Index --reference reference.fa --workdir /working/directory --exclude exclude.ref.bed --copyneutral CN2.ref.bed --svelter-path SVelter/ ```
-
-
 
 ## Quick Start
 
 ##Download and Install
-'''
+
+```
 git clone git@github.com:mills-lab/svelter.git
-cd 
-'''
+cd svelter
+chmod +x SVelter.py
+```
 
+##Index Reference genome
 
-To run SVelter with its default setting:
+``` 
+SVelter.py Index --reference reference.fa --workdir /working/directory --exclude exclude.ref.bed --copyneutral CN2.ref.bed --svelter-path SVelter/ 
+```
 
+##Run SVelter with its default setting:
+
+```
 SVelter.py --sample /absolute/path/of/sample.bam --workdir /working/directory
-
+```
 
 
 For faster processing, SVelter could run with multiple cores:
