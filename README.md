@@ -5,8 +5,8 @@ This software is designed to identify both simple and complex rearrangements fro
 
 ##Required third-party resources
 ```
-python: https://www.python.org/
-R: https://www.r-project.org/
+R:        https://www.r-project.org/
+python:   https://www.python.org/
 samtools: http://samtools.sourceforge.net/
 ```
 
