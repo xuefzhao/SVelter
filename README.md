@@ -4,9 +4,11 @@
 This software is designed to identify both simple and complex rearrangements from paired-end sequencing data. Users could ran it easily by just alling *SVelter.py* with proper parameters. It's also possible to ran it on multiple cores by calling different sub-functions separately.
 
 ##Required third-party resources
-* python: https://www.python.org/
-* R 
-* samtools: http://samtools.sourceforge.net/
+```
+python: https://www.python.org/
+R: https://www.r-project.org/
+samtools: http://samtools.sourceforge.net/
+```
 
 ## Quick Start
 Download and Install
@@ -39,13 +41,14 @@ SVelter.py  [options]  [parameters]
 ##Parameters:
 
 ####Required:
-
-  `--workdir`, writable working directory.
+```
+  --workdir, writable working directory.
   
-  `--sample`, input alignment file in bam format
+  --sample, input alignment file in bam format
+```
 
 ####Optional:
-
+```
 `--null-model`, specify which stat model to be fitted on each parameter. if --null-model==C / Complex, negative bimodal distribution will be fitted to insertlenth; else, normal will be used
 
 `--null-copyneutral-length`, minimum length requirement for --copyneutral regions used to build null model (default: 2000)
@@ -75,7 +78,7 @@ SVelter.py  [options]  [parameters]
 `--prefix`, output prefix for vcf and svelter files (default: input.vcf, input.svelter)
 
 `--ploidy`, limit algorithm to specific zygosity (0:heterozygous only; 1:homozygous only; 2:both; default:2)
-
+```
 
 ###Attentions:
 
@@ -86,13 +89,14 @@ SVelter.py  [options]  [parameters]
 
 
 
-##For faster processing, SVelter could run with multiple cores:
+###For faster processing, SVelter could run with multiple cores:
 
 ####Step1: Build null models:
 ```
 SVelter.py NullModel --sample /absolute/path/of/sample.bam --workdir /working/directory
 ```
 
+```
 Optional Parameters:
 
 --chromosome, name of chromosome to run. should match chromosome name in bam file
@@ -112,13 +116,14 @@ Optional Parameters:
 --qc-split, minimum alighment of clipped parts of reads considered as a soft clip (default: 20)
 
 --split-min-len, the minumum length of clip read considered as split  (default:10% of read length)
-
+```
 
 ####Step2: Search for Breakpoints:
 ```
 SVelter.py BPSearch --sample /absolute/path/of/sample.bam --workdir /working/directory
 ```
 
+```
 Optional Parameters:
 
 --chromosome, name of chromosome to run. should match chromosome name in bam file
@@ -136,22 +141,26 @@ Optional Parameters:
 --qc-map-file, .bigWig file used to decide local genomic mappability, avaliable from: ftp://hgdownload.cse.ucsc.edu/goldenPath/currentGenomes/Homo_sapiens/encodeDCC/wgEncodeMapability/
 
 --qc-map-cutoff, the minimum mapping quality required for a breakpoint to be reported (default: 0.0)
-
+```
 
 ####Step3: Cluster Breakpoints:
 ```
 SVelter.py BPIntegrate --sample /absolute/path/of/sample.bam --workdir /working/directory
+```
+
 ```
 Optional Parameters:
 
 --chromosome, name of chromosome to run. should match chromosome name in bam file
 
 --batch, specify number of structures in each separate file (if 0, output files will be calssified by chromosomes; default, all BP clustered will be integrated in one txt file)
-
+```
 
 ####Step4: Resolve complex structural variants:
 ```
 SVelter.py SVPredict --sample sample.bam --workdir /working/directory --bp-file input/file/containing/clustered/bps
+ ```
+ 
  ```
 Optional Parameters:
 
@@ -162,13 +171,16 @@ Optional Parameters:
 --null-model, specify which stat model to be fitted on each parameter. if --null-model==C / Complex, negative bimodal distribution will be fitted to insertlenth; else, normal will be used
 
 --qc-align, minimum alignment quality required for mapped reads in bam file (default: 20)
-
+```
 
 ####Step5: Write output in vcf format:
 ```
 SVelter.py SVIntegrate --workdir /working/directory --prefix output  --input-path path/of/output/from/Step4
 ```
+
+```
 Optional Parameters:
 
 --qc-structure, minimum quality score of a resolved structure to be considered as PASS and included in the output vcf file
-                        
+```
+
