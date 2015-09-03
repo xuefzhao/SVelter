@@ -61,10 +61,6 @@ SVelter.py  [options]  [parameters]
 
 --num-iteration, maximum number of iterations per structure will run in SV predicting step
 
---qc-map-tool, the tool extracts mappability information from a bigWig file,avaliable from: http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/bigWigSummary
-
---qc-map-file, .bigWig file used to decide local genomic mappability, avaliable from: ftp://hgdownload.cse.ucsc.edu/goldenPath/currentGenomes/Homo_sapiens/encodeDCC/wgEncodeMapability/ 
-
 --qc-map-cutoff, the minimum mapping quality required for a breakpoint to be reported (default: 0.0)
 
 --qc-align, minimum alignment quality required for mapped reads in bam file (default: 20)
