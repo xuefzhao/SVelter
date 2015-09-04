@@ -19,18 +19,30 @@ chmod +x SVelter.py
 ```
 Index Reference genome
 ``` 
-SVelter.py Index --reference reference.fa --workdir /working/directory --exclude exclude.ref.bed --copyneutral CN2.ref.bed --svelter-path SVelter/ 
+SVelter.py Setup --reference reference.fa --workdir /working/directory --exclude exclude.ref.bed --copyneutral CN2.ref.bed --ref-index indexed-ref/ --svelter-path SVelter/ 
 ```
 Run SVelter with its default setting:
 ```
 SVelter.py --sample /absolute/path/of/sample.bam --workdir /working/directory
 ```
 
+###Required files:
+`exclude.ref.bed` and `CN2.ref.bed` are available from the folder *Support* for some versions of reference genome. Users could replace with their custom version as long as both are in bed format. For more details, please see *Support*. 
+
+Pre-indexed files of certain reference genomes have been produced and kept under folder *index-ref*. For specific reference, if not pre-indexed files provided, the optional parameter '--ref-index' could be omit and the indexed files would be produced through the setup step. 
+
+###Attention:
+reference file should have been indexed by calling samtools first:  `samtools faidx ref.fasta`
+
+working directory is required to be writable for temporal files 
+
+
 ##Usage
 SVelter.py  [options]  [parameters]
 
 ###Options:
 ```
+  Setup
   NullModel
   BPSearch
   BPIntegrate
@@ -39,15 +51,28 @@ SVelter.py  [options]  [parameters]
 ```
 
 ###Parameters:
-
-####Required:
+####For `Setup`:
+#####Required Parameters:
+```
+--workdir, writable working directory.
+--reference, absolute path of reference genome. eg: .../SVelter/reference/genome.fa
+--exclude, absolute path of bed file indicating regions to be excluded from analysis. If not provided, no mappable regions will be excluded.
+--copyneutral,absolute, path of bed file indicating copy neutural regions based on which null statistical models would be built. If not provided, genome would be randomly sampled for null model.
+--svelter-path, folder which contains all SVelter scripts.
+```
+#####Optional Parameters:
+```
+--ref-index, folders containin pre-indexed files, if applicable. For certain versions of human genome, the indexed files are availabel from https://github.com/mills-lab/svelter.
+```
+####For other step:
+#####Required:
 ```
   --workdir, writable working directory.
   
   --sample, input alignment file in bam format
 ```
 
-####Optional:
+#####Optional:
 ```
 --null-model, specify which stat model to be fitted on each parameter. if --null-model==C / Complex, negative bimodal distribution will be fitted to insertlenth; else, normal will be used
 
@@ -75,14 +100,6 @@ SVelter.py  [options]  [parameters]
 
 --ploidy, limit algorithm to specific zygosity (0:heterozygous only; 1:homozygous only; 2:both; default:2)
 ```
-
-###Attentions:
-
-> reference file should have been indexed by calling samtools first:  `samtools faidx ref.fasta`
-
-> working directory is required to be writable for temporal files 
-
-
 
 
 ###For faster processing, SVelter could run with multiple cores:
