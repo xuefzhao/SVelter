@@ -1,3 +1,4 @@
+We apply different SV detecting algorithms: SVelter, Delly, Lumpy and Pindel on two real genomes: NA12878 and CHM1. Compare the results using our in house scripts:
 #On NA12878
 ##Run SVelter on NA12878
 ```
@@ -6,15 +7,11 @@ SVelter.py --workdir /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/ --sample /mnt/
 ```
 ####Process the results:
 ```
-vcf2simplevcf.py -i SVelter_NA12878_S1.vcf 
-
-SV.Simple.Output.Process.py vcf-to-bed --input /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/Compare_Different_algorithms/SVelter/SVelter_NA12878_S1_simple.vcf
-SV.Simple.Output.Process.py Mappable-Control --input /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/Compare_Different_algorithms/SVelter/SVelter_NA12878_S1_simple.DEL.bed --ref-prefix /mnt/EXT/Mills-scratch2/Xuefang/svelter/Index.Reference/hg19/genome.Mappable.bed
-SV.Simple.Output.Process.py Size-Control --min-size 100 --max-size 1000000000 --input /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/Compare_Different_algorithms/SVelter/SVelter_QC_NA12878_S1.DEL.Mappable.bed
-
-SV.Simple.Output.Process.py vcf-to-bed --input /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/Compare_Different_algorithms/SVelter/SVelter_NA12878_S1.cff-20_simple.vcf
-SV.Simple.Output.Process.py Mappable-Control --input /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/SVelter/SVelter_NA12878_S1.cff-20_simple.DEL.bed --ref-prefix /mnt/EXT/Mills-scratch2/Xuefang/svelter/Index.Reference/hg19/genome.Mappable.bed
-SV.Simple.Output.Process.py Size-Control --min-size 100 --max-size 1000000000 --input /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/SVelter/SVelter_QC_NA12878_S1.DEL.Mappable.bed
+SV.SVelter.VCF.process.py quality-control --input /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/SVelter/SVelter_NA12878_S1.vcf --score -20
+SV.SVelter.VCF.process.py simple-extract --input /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/SVelter/SVelter_NA12878_S1.cff-20.vcf.vcf 
+SV.Simple.Output.Process.py vcf-to-bed --input /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/SVelter/SVelter_NA12878_S1.cff-20_simple.vcf
+SV.Simple.Output.Process.py Mappable-Control --input /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/SVelter/SVelter_NA12878_S1.cff-20_simple.DEL.bed --ref-prefix /mnt/EXT/Mills-scratch2/Xuefang/svelter/Index.Reference/GRCh37/genome.Mappable.bed
+SV.Simple.Output.Process.py Size-Control --min-size 100 --max-size 1000000000 --input /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/SVelter/SVelter_NA12878_S1.cff-20_simple.DEL.Mappable.bed
 ```
 
 ##Run Delly on NA12878
