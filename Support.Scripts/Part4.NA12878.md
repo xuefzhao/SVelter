@@ -8,9 +8,9 @@ SVelter.py --workdir /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/ --sample /mnt/
 ####Process the results:
 ```
 SV.SVelter.VCF.process.py quality-control --input /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/SVelter/SVelter_NA12878_S1.vcf --score -20 
->keep only SVs with quality score  -20
+  `<keep only SVs with quality score  -20>`
 SV.SVelter.VCF.process.py simple-extract --input /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/SVelter/SVelter_NA12878_S1.cff-20.vcf.vcf  
->extract only predicted simple events over -20
+  `<extract only predicted simple events over -20>`
 SV.Simple.Output.Process.py vcf-to-bed --input /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/SVelter/SVelter_NA12878_S1.cff-20_simple.vcf
 SV.Simple.Output.Process.py Mappable-Control --input /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/SVelter/SVelter_NA12878_S1.cff-20_simple.DEL.bed --ref-prefix /mnt/EXT/Mills-scratch2/Xuefang/svelter/Index.Reference/GRCh37/genome.Mappable.bed
 SV.Simple.Output.Process.py Size-Control --min-size 100 --max-size 1000000000 --input /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/SVelter/SVelter_NA12878_S1.cff-20_simple.DEL.Mappable.bed
@@ -53,7 +53,7 @@ pindel2vcf -P NA12878_S1.bam.pindel -r /mnt/EXT/Mills-scratch2/Xuefang/NA12878.N
 ####Process the results:
 ```
 vcf.size.filter.py -i /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/Pindel/Pindel.NA12878_S1.vcf --size 100
->keep only SV reports with size over 100bp
+  `<keep only SV reports with size over 100bp>`
 SV.Simple.Output.Process.py vcf-to-bed --input /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/Pindel/Pindel.NA12878_S1.LargerThan100.vcf
 SV.Simple.Output.Process.py Mappable-Control --input /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/Pindel/Pindel.NA12878_S1.LargerThan100.DEL.bed --ref-prefix /mnt/EXT/Mills-scratch2/Xuefang/svelter/Index.Reference/hg19/genome.Mappable.bed
 SV.Simple.Output.Process.py Size-Control --min-size 100 --max-size 1000000000 --input /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/Pindel/Pindel.NA12878_S1.LargerThan100.DEL.Mappable.bed
@@ -105,8 +105,6 @@ ln -s /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/a
 ```
 Produce.Pseudo.ROC.stats.py --path_ref /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/ref_bed_after_pacbio/ --path_in /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/alt_bed_after_pacbio/ --appdix .Mappable.min100.max1000000000.bed
 ```
-
-
 
 
 
