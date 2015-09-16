@@ -17,10 +17,10 @@ SV.Simple.Output.Process.py Size-Control --min-size 100 --max-size 1000000000 --
 ##Run Delly on NA12878
 ```
 delly -t DEL -s 10 -x /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/Delly.reference/human.hg19.excl.tsv -o /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/Delly/Delly_NA12878_DEL.vcf -g /mnt/EXT/Mills-scratch2/reference/hg19/hg19.fa /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/alignment/NA12878_S1.bam  
-grep -v LowQual /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/Delly/Delly_NA12878_DEL.vcf > /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/Delly/Delly_QC_NA12878_DEL.vcf
 ```
 ####Process the results:
 ```
+grep -v LowQual /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/Delly/Delly_NA12878_DEL.vcf > /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/Delly/Delly_QC_NA12878_DEL.vcf
 SV.Simple.Output.Process.py vcf-to-bed --input /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/Delly/Delly_QC_NA12878_DEL.vcf
 SV.Simple.Output.Process.py Mappable-Control --input /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/Delly/Delly_QC_NA12878_DEL.DEL.bed --ref-prefix /mnt/EXT/Mills-scratch2/Xuefang/svelter/Index.Reference/hg19/genome.Mappable.bed
 SV.Simple.Output.Process.py Size-Control --min-size 100 --max-size 1000000000 --input /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/Delly/Delly_QC_NA12878_DEL.DEL.Mappable.bed
