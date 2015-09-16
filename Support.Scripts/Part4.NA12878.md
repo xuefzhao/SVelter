@@ -23,7 +23,7 @@ delly -t DEL -s 10 -x /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Differ
 ####Process the results:
 ```
 grep -v LowQual /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/Delly/Delly_NA12878_DEL.vcf > /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/Delly/Delly_QC_NA12878_DEL.vcf
->remove reports that failed quality control
+  `<remove reports that failed quality control>`
 SV.Simple.Output.Process.py vcf-to-bed --input /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/Delly/Delly_QC_NA12878_DEL.vcf
 SV.Simple.Output.Process.py Mappable-Control --input /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/Delly/Delly_QC_NA12878_DEL.DEL.bed --ref-prefix /mnt/EXT/Mills-scratch2/Xuefang/svelter/Index.Reference/hg19/genome.Mappable.bed
 SV.Simple.Output.Process.py Size-Control --min-size 100 --max-size 1000000000 --input /mnt/EXT/Mills-scratch2/Xuefang/NA12878.NGS/Compare_Different_algorithms/Delly/Delly_QC_NA12878_DEL.DEL.Mappable.bed
