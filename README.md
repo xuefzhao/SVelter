@@ -16,6 +16,7 @@ Download and Install
 git clone git@github.com:mills-lab/svelter.git
 cd svelter
 chmod +x SVelter.py
+cp SVelter.py your/bin/directory/
 ```
 Index Reference genome
 ``` 
@@ -32,9 +33,9 @@ SVelter.py --sample /absolute/path/of/sample.bam --workdir /working/directory
 Pre-indexed files of certain reference genomes have been produced and kept under folder *index-ref*. For specific reference, if not pre-indexed files provided, the optional parameter '--ref-index' could be omit and the indexed files would be produced through the setup step. 
 
 ###Attention:
-reference file should have been indexed by calling samtools first:  `samtools faidx ref.fasta`
-
-working directory is required to be writable for temporal files 
+*reference file should have been indexed by calling samtools first:  `samtools faidx ref.fasta`
+*working directory is required to be writable for temporal files 
+*if sample file is large (eg. >50X whole genome sequencing), it is recommended that these parameters `<--null-copyneutral-length 5000 --null-copyneutral-perc 0.01>` added to your command. These two parameter decides the number and size of CN2 regions extracted for building null model.
 
 
 ##Usage
