@@ -1402,7 +1402,7 @@ else:
     if function_name=='BPSearch':
         import glob
         import getopt
-        opts,args=getopt.getopt(sys.argv[2:],'o:h:S:',['help=','long-insert=','prefix=','batch=','sample=','workdir=','reference=','chromosome=','exclude=','copyneutral=','ploidy=','svelter-path=','input-path=','null-model=','null-copyneutral-length=','null-copyneutral-perc=','null-random-length=','null-random-num=','null-random-length=','null-random-num=','qc-align=','qc-split=','qc-structure=','qc-map-tool=','qc-map-file=','split-min-len=','read-length=','keep-temp-files=','keep-temp-figs=','bp-file=','num-iteration=','BPSPCff=','BPLNCff='])
+        opts,args=getopt.getopt(sys.argv[2:],'o:h:S:',['help=','long-insert=','prefix=','batch=','sample=','workdir=','reference=','chromosome=','exclude=','copyneutral=','ploidy=','svelter-path=','input-path=','null-model=','null-copyneutral-length=','null-copyneutral-perc=','null-random-length=','null-random-num=','null-random-length=','null-random-num=','qc-align=','qc-split=','qc-structure=','qc-map-tool=','qc-map-file=','split-min-len=','read-length=','keep-temp-files=','keep-temp-figs=','bp-file=','num-iteration='])
         dict_opts=dict(opts)
         CN2_Region={}
         if dict_opts=={} or dict_opts.keys()==['-h'] or dict_opts.keys()==['--help']:
@@ -2674,15 +2674,13 @@ else:
                                         if '--BPSPCff' in dict_opts.keys():
                                             BPSPCff=int(float(dict_opts['--BPSPCff']))
                                         else:
-                                            #BPSPCff=int(round(0.8*float(TBStats['stat']['Median'])/float(10)))
-                                            BPSPCff=int(round(2*float(RDStats['Median'])/float(10)))
+                                            BPSPCff=int(round(0.8*float(TBStats['stat']['Median'])/float(10)))
                                         if BPSPCff<3:
                                             BPSPCff=3
                                         if '--BPLNCff' in dict_opts.keys():
                                             BPLNCff=int(float(dict_opts['--BPLNCff']))
                                         else:
-                                            #BPLNCff=int(round(1.2*float(TBStats['stat']['Median'])/float(10)))
-                                            BPLNCff=int(round(3*float(RDStats['Median'])/float(10)))
+                                            BPLNCff=int(round(1.2*float(TBStats['stat']['Median'])/float(10)))
                                         if BPLNCff<3:
                                             BPLNCff=3
                                         SPCluMin=BPSPCff
@@ -4111,8 +4109,6 @@ else:
                         else:
                             out.append(temp2)
                             temp2=temp[flag1]
-                    if not temp2 in out:
-                        out.append(temp2)
                 Cff2=5*(10**6)
                 out3=[]
                 if not out2==[]:
@@ -5505,16 +5501,6 @@ else:
                                         out[k1][j]+=RD_hash[k1][k2][:(bl1[1]-bl2[0])/Window_Size+1]
                                     elif bl1[0]<bl2[0] and bl1[1]>bl2[1]:
                                         out[k1][j]+=RD_hash[k1][k2]
-                                elif len(chr_letter_bp[k1][j])==2:
-                                    bl1=chr_letter_bp[k1][j]
-                                    if bl1[0]>bl2[0]-1 and bl1[1]<bl2[1]+1:
-                                        out[k1][j]+=RD_hash[k1][k2][(bl1[0]-bl2[0])/Window_Size:(bl1[1]-bl2[0])/Window_Size+1]
-                                    elif bl1[0]>bl2[0]-1 and bl1[1]>bl2[1]:
-                                        out[k1][j]+=RD_hash[k1][k2][(bl1[0]-bl2[0])/Window_Size:]
-                                    elif bl1[0]<bl2[0] and bl1[1]<bl2[1]+1:
-                                        out[k1][j]+=RD_hash[k1][k2][:(bl1[1]-bl2[0])/Window_Size+1]
-                                    elif bl1[0]<bl2[0] and bl1[1]>bl2[1]:
-                                        out[k1][j]+=RD_hash[k1][k2]
                     for k1 in out.keys():
                         for k2 in out[k1].keys():
                             if out[k1][k2]==[]:
@@ -5792,7 +5778,6 @@ else:
                     for k2 in rd_low_qual[k1].keys():
                         block_rds[k1][k2]+=rd_low_qual[k1][k2]
                 return [block_rds,block_rd2,Pair_ThroughBP,Double_Read_ThroughBP,Single_Read_ThroughBP]
-                total_rd_calcu(letter_RD2,letter_GC,chr_letter_bp,block_rd2)
             def total_rd_calcu(letter_RD2,letter_GC,chr_letter_bp,block_rd2):
                 out={}
                 for k1 in block_rd2.keys():
@@ -8601,52 +8586,9 @@ else:
                         GC_Mean_Coverage[x]=GC_Mean_Coverage[chrom_N]
                     if not x in GC_Std_Coverage.keys():
                         GC_Std_Coverage[x]=GC_Std_Coverage[chrom_N]
-            def RD_block_estimate_from_bam(bps):
-                #eg of bps:['chr1',1,10]
-                reads=0
-                start=int(bps[1])
-                end=int(bps[2])
-                fin=os.popen(r'''samtools view %s %s:%d-%d'''%(dict_opts['--sample'],bps[0],start,end))
-                for line in fin:
-                    pin=line.strip().split()
-                    if int(pin[3])>start and int(pin[3])<end-ReadLength:
-                        reads+=1
-                    if pin[6]=='=':
-                        if int(pin[7])>start and int(pin[7])<end-ReadLength:
-                            reads+=1
-                fin.close()
-                return float(reads)*float(ReadLength)/float(end-start)
-            def letter_RD_ReadIn_from_bam(chr_letter_bp):
-                Initial_GCRD_Adj_pre={}
-                for k1 in chr_letter_bp.keys():
-                    Initial_GCRD_Adj_pre[k1]={}
-                    for k2 in chr_letter_bp[k1].keys():
-                        Initial_GCRD_Adj_pre[k1][k2]=RD_block_estimate_from_bam([k1]+chr_letter_bp[k1][k2])
-                return Initial_GCRD_Adj_pre             
-            def letter_RD_ReadIn_Multi_source(chr_letter_bp):
-                temp1={}
-                temp2={}
-                for k1 in chr_letter_bp.keys():
-                    temp1[k1]={}
-                    temp2[k1]={}
-                    for k2 in chr_letter_bp[k1].keys():
-                        temp=chr_letter_bp[k1][k2]
-                        if temp[1]-temp[0]>500:
-                            temp1[k1][k2]=chr_letter_bp[k1][k2]
-                        else:
-                            temp2[k1][k2]=chr_letter_bp[k1][k2]
-                out1=letter_RD_ReadIn(temp1)
-                out2=letter_RD_ReadIn_from_bam(temp2)
-                for k1 in out2.keys():
-                    if not k1 in out1.keys():
-                        out1[k1]={}
-                    for k2 in out2[k1].keys():
-                        if not k2 in out1[k1].keys():
-                            out1[k1][k2]=out2[k1][k2]
-                return out1
             def copy_num_estimate_calcu(bps2):
                 chr_letter_bp=letter_rearrange(bps2)
-                Initial_GCRD_Adj_pre=letter_RD_ReadIn_Multi_source(chr_letter_bp)
+                Initial_GCRD_Adj_pre=letter_RD_ReadIn(letter_RD_test_calcu(chr_letter_bp))
                 global Initial_GCRD_Adj
                 Initial_GCRD_Adj={}
                 for k1 in Initial_GCRD_Adj_pre.keys():
@@ -8662,7 +8604,7 @@ else:
                             Copy_num_estimate[i]=-1
                 Copy_num_Check=[]
                 for CNE in Copy_num_estimate.keys():
-                    if Copy_num_estimate[CNE]>4 or Copy_num_estimate[CNE]==-1:
+                    if Copy_num_estimate[CNE]>4:
                         Copy_num_Check.append(CNE)
                 return [Copy_num_estimate,Copy_num_Check]
             def bps4_to_bps2(bps4):
@@ -8683,14 +8625,6 @@ else:
                 Best_IL_Score=0
                 global Best_RD_Score
                 Best_RD_Score=0
-            def GC_Median_Num_Correct():
-                numbers=[]
-                for k1 in sorted(GC_Median_Num.keys()):
-                    if not GC_Median_Num[k1]==0.0:
-                        numbers.append(GC_Median_Num[k1])
-                for k1 in sorted(GC_Median_Num.keys()):
-                    if GC_Median_Num[k1]==0.0:
-                        GC_Median_Num[k1]=Median_Pick(numbers)
             Define_Default_SVPredict()
             if not '--workdir' in dict_opts.keys():
                 print 'Error: please specify working directory using: --workdir'
@@ -8808,37 +8742,34 @@ else:
                                         GC_Std_Coverage={}
                                         GC_Var_Coverage={}
                                         for a in Chromosome:
+                                            GC_Overall_temp=[]
+                                            GC_Median_Coverage[a]={}
                                             if a in GC_Content_Coverage.keys():
-                                                GC_Overall_temp=[]
                                                 for b in Coverage:
-                                                    if not b in GC_Content_Coverage[a].keys(): continue
-                                                    if not b in GC_Median_Num.keys():
-                                                        GC_Median_Num[b]=[]
-                                                    if len(GC_Content_Coverage[a][b][0])==2: continue
-                                                    elif len(GC_Content_Coverage[a][b][0])>2:
-                                                            num_list=[float(c) for c in GC_Content_Coverage[a][b][0][2:].split(',')]
-                                                            if not sum(num_list)==0:
+                                                    if b in GC_Content_Coverage[a].keys():
+                                                        if not b in GC_Median_Num.keys():
+                                                            GC_Median_Num[b]=[]
+                                                        if len(GC_Content_Coverage[a][b][0])==2: continue
+                                                        elif len(GC_Content_Coverage[a][b][0])>2:
+                                                                num_list=[float(c) for c in GC_Content_Coverage[a][b][0][2:].split(',') if not c=='0.0']
                                                                 GC_Median_Num[b]+=num_list
                                                                 GC_Overall_Median_Num+=num_list
                                                                 GC_Overall_temp=GC_Overall_temp+num_list
                                                                 if not Median_Pick(num_list)==0.0:
-                                                                    if not a in GC_Median_Coverage.keys():
-                                                                        GC_Median_Coverage[a]={}
-                                                                    GC_Median_Coverage[a][b]=Median_Pick(num_list)
-                                                if len(GC_Overall_temp)==0: continue
-                                                if sum(GC_Overall_temp)==0.0: continue
-                                                elif len(GC_Overall_temp)>0: 
-                                                        GC_Overall_Median_Coverage[a]=Median_Pick(GC_Overall_temp)
-                                                        GC_Mean_Coverage[a]=numpy.mean(GC_Overall_temp)
-                                                        GC_Std_Coverage[a]=numpy.std(GC_Overall_temp)
-                                                        GC_Var_Coverage[a]=(GC_Std_Coverage[a])**2
-                                        GC_Overall_Median_Num=Median_Pick([i for i in GC_Overall_Median_Num if not i==0])
+                                                                        GC_Median_Coverage[a][b]=Median_Pick(num_list)
+                                            if len(GC_Overall_temp)==0: continue
+                                            if sum(GC_Overall_temp)==0.0: continue
+                                            elif len(GC_Overall_temp)>0: 
+                                                    GC_Overall_Median_Coverage[a]=Median_Pick(GC_Overall_temp)
+                                                    GC_Mean_Coverage[a]=numpy.mean(GC_Overall_temp)
+                                                    GC_Std_Coverage[a]=numpy.std(GC_Overall_temp)
+                                                    GC_Var_Coverage[a]=(GC_Std_Coverage[a])**2
+                                        GC_Overall_Median_Num=Median_Pick(GC_Overall_Median_Num)
                                         for a in GC_Median_Num.keys():
                                             if GC_Median_Num[a]==[]:
                                                 GC_Median_Num[a]=GC_Overall_Median_Num
                                             else:
                                                 GC_Median_Num[a]=Median_Pick(GC_Median_Num[a])
-                                        GC_Median_Num_Correct()
                                         ChrN_Median_Coverage={}
                                         for i in GC_Median_Coverage.keys():
                                             for j in GC_Median_Coverage[i].keys():
@@ -8848,7 +8779,7 @@ else:
                                                     ChrN_Median_Coverage[j]+=[GC_Median_Coverage[i][j]]
                                         GC_RD_Info_Complete(ref_file)
                                         for bpsk1 in sorted(bps_hash.keys()):
-                                            for bps2 in bps_hash[bpsk1][1:2]:
+                                            for bps2 in bps_hash[bpsk1]:
                                                 print bps2
                                                 if qual_check_bps2(bps2)=='right':
                                                     Chromo=bps2[0][0]
@@ -9429,6 +9360,16 @@ else:
                                                         else:
                                                             Score_rec_hash={}
                                                             bps_new={}
+                                                            #Initial_DR=Full_Info[2]
+                                                            #Initial_IL=Full_Info[3]
+                                                            #Initial_Info=Full_Info[4]+Full_Info[5]+Full_Info[6]
+                                                            #BlockGC=Full_Info[7]
+                                                            #BlockGC['left']=0.476
+                                                            #BlockGC['right']=0.476
+                                                            #BlockGC2={}
+                                                            #for key_B_GC in BlockGC.keys():
+                                                            #    BlockGC2[key_B_GC]=BlockGC[key_B_GC]
+                                                            #    BlockGC2[key_B_GC+'^']=BlockGC[key_B_GC]    
                                                             temp_Full_Info=original_bp_let_produce(chr_letter_bp,bps2)
                                                             original_letters=temp_Full_Info[1]
                                                             original_bp_list=temp_Full_Info[0]
@@ -9437,8 +9378,8 @@ else:
                                                                     for blk2 in sorted(chr_letter_bp[blk1].keys()):
                                                                         if blk2==bl:
                                                                             bps2_temp=[blk1]+[chr_letter_bp[blk1][blk2][0],chr_letter_bp[blk1][blk2][-1]]
-                                                                            copy_num_a=max([0,int(Copy_num_estimate[bl])/2])
-                                                                            copy_num_b=max([0,Copy_num_estimate[bl]-copy_num_a])
+                                                                            copy_num_a=int(Copy_num_estimate[bl])/2
+                                                                            copy_num_b=Copy_num_estimate[bl]-copy_num_a
                                                                             Best_Letter_Rec=[[['a' for i in range(copy_num_a)],['a' for i in range(copy_num_a)]]]
                                                                             Best_Score_Rec=100
                                                                             write_best_letter([bps2_temp],Best_Letter_Rec,Best_Score_Rec,Score_rec_hash,original_letters)

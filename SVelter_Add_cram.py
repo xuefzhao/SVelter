@@ -354,9 +354,9 @@ else:
                         print 'Error: please specify path of SVelter scripts using --svelter-path'                       
                     else:
                         time1=time.time()
-                        ref_path=workdir+'reference/'
+                        ref_path=workdir+'reference_SVelter/'
                         if not ref_path=='/'.join(ref_file.split('/')[:-1])+'/':
-                            ref_path=workdir+'reference/'
+                            ref_path=workdir+'reference_SVelter/'
                             if not os.path.isdir(ref_path):
                                 os.system(r'''mkdir %s'''%(ref_path))
                             os.system(r'''ln -s %s %s'''%(dict_opts['--svelter-path']+'/SVelter*.r',ref_path))  
@@ -769,7 +769,7 @@ else:
                 SplitLengthPath=NullPath
                 if not os.path.isdir(SplitLengthPath):
                         os.system(r'''mkdir %s'''%(SplitLengthPath))
-                SplitLengthOutput=SplitLengthPath+'/'+bamF.split('/')[-1].replace('.bam','')+'.'+genome_name+'.SplitLength'
+                SplitLengthOutput=SplitLengthPath+'/'+bamF.split('/')[-1].replace('.'+bam_file_appdix,'')+'.'+genome_name+'.SplitLength'
                 fslo=open(SplitLengthOutput,'w')
                 print >> fslo, ' '.join(['Length_of_Split_Region', 'Time_of_Observation'])
                 Total_Split_Reads=0
@@ -907,7 +907,8 @@ else:
             else:
                 bam_path='/'.join(dict_opts['--sample'].split('/')[:-1])+'/'
                 bam_files=[dict_opts['--sample']]
-                ref_path=workdir+'reference/'
+                bam_file_appdix=dict_opts['--sample'].split('.')[-1]
+                ref_path=workdir+'reference_SVelter/'
                 ref_file=ref_path+'genome.fa'
                 ref_index=ref_file+'.fai'
                 cn2_file=ref_path+'CN2.bed'
@@ -938,12 +939,12 @@ else:
                         NullPath=NullPath_SetUp(out_path)
                         path_BP=PathBP_SetUp(out_path)
                         print 'temp files produced under: '+workdir
-                        Script_Path=workdir+'reference/'
+                        Script_Path=workdir+'reference_SVelter/'
                         for bamF in bam_files:
                             time1=time.time()
                             if ReadLength_Flag==0:
                                 ReadLengthHash={}
-                            outputfile=NullPath+bamF.split('/')[-1].replace('.bam','')+'.'+genome_name+'.null'
+                            outputfile=NullPath+bamF.split('/')[-1].replace('.'+bam_file_appdix,'')+'.'+genome_name+'.null'
                             fo=open(outputfile,'w')
                             print >>fo, ' '.join(['position','GCContent','ReadDepth','SplitReads','AbnormalDirection','ThroughBP'])
                             fo.close()
@@ -1268,7 +1269,7 @@ else:
                                         if not b==0:
                                             print >>foIL, ' '.join([str(b), str(GC_Content[b])])
                                     foIL.close()
-                                    RFigureDRSplit=Script_Path+'SVelter1.NullModel.Figure.a.r'	
+                                    RFigureDRSplit=Script_Path+'SVelter1.NullModel.Figure.a.r'  
                                     InsertLenNullTemp=NullPath+'InsertLenNull.'+'.'.join(bamF.split('/')[-1].split('.')[:-1])+'.'+genome_name+'.temp'
                                     fIL=open(InsertLenNullTemp,'w')
                                     for dr in ILNullDensity.keys():
@@ -1306,7 +1307,7 @@ else:
                                         SplitNullfigure2=SplitNullfigure2.replace('.pdf','.na')
                                     os.system('''Rscript %s %s %s %s %s'''%(RFigureDRSplit,SplitNullTemp,SplitNullfigure1,BoxPlotColor,SplitNullfigure2))
                                     if model_comp=='C':
-                                        RFigureDRSplit2=Script_Path+'SVelter1.NullModel.Figure.b.r'	
+                                        RFigureDRSplit2=Script_Path+'SVelter1.NullModel.Figure.b.r' 
                                     else:
                                         RFigureDRSplit2=Script_Path+'SVelter1.NullModel.Figure.c.r'    
                                     RDNullTemp=NullPath+'RDNull.'+'.'.join(bamF.split('/')[-1].split('.')[:-1])+'.'+genome_name+'.temp'
@@ -1373,7 +1374,7 @@ else:
                                                         os.system(r'''samtools view %s %s:%d-%d > %s'''%(bamF,str(pcn2[0]),int(pcn2[1]),int(pcn2[2]),sam_file))
                                                         Number_Of_Windows=len(Seq1)/Window_Size
                                                         GC_Content={}
-                                                        for i in range(len(Seq1)/Window_Size+1)[1:]:				
+                                                        for i in range(len(Seq1)/Window_Size+1)[1:]:                
                                                                 Seq2=Seq1[(i-1)*Window_Size:i*Window_Size]
                                                                 GC_Content[i]=GC_Content_Calculate(Seq2)
                                                         coverage=Region_Coverage_Calculate(sam_file,Number_Of_Windows,pcn2)
@@ -1385,7 +1386,7 @@ else:
                                         os.system(r'''rm %s'''%(NullPath+temp_Name+'.fa'))
                                     if os.path.isfile(NullPath+temp_Name+'.sam'):
                                         os.system(r'''rm %s'''%(NullPath+temp_Name+'.sam'))
-                                    Output_File=NullPath+'RD_Stat/'+bamF.split('/')[-1].replace('.bam','')+'.'+genome_name+'_MP'+str(QCAlign)+'_GC_Coverage_ReadLength'
+                                    Output_File=NullPath+'RD_Stat/'+bamF.split('/')[-1].replace('.'+bam_file_appdix,'')+'.'+genome_name+'_MP'+str(QCAlign)+'_GC_Coverage_ReadLength'
                                     Output_Path=NullPath+'RD_Stat/'
                                     if not os.path.isdir(Output_Path):
                                         os.system(r'''mkdir %s'''%(Output_Path))
@@ -2388,7 +2389,7 @@ else:
                 fTBS.close()
                 return TBStats
             def Null_Stats_Readin_One(NullPath,bamF,NullSplitLen_perc):
-                fin=open(NullPath+bamF.split('/')[-1].replace('.bam','.')+genome_name+'.Stats')
+                fin=open(NullPath+bamF.split('/')[-1].replace('.'+bam_files_appdix,'.')+genome_name+'.Stats')
                 pin=fin.readline().strip().split()
                 pin=fin.readline().strip().split()
                 pin=fin.readline().strip().split()
@@ -2499,7 +2500,7 @@ else:
                         loc2.append([loc[0]+(slNum+1)*10**6-int(ClusterLen),loc[1]])
                 return loc2
             def letter_RD_ReadIn(info):
-                BamN=dict_opts['--sample'].split('/')[-1].replace('.bam','')
+                BamN=dict_opts['--sample'].split('/')[-1].replace('.'+bam_files_appdix,'')
                 filein=workdir+'NullModel.'+dict_opts['--sample'].split('/')[-1]+'/RD_Stat/'+BamN+'.'+info[0]+'.RD.index'
                 test_flag=0
                 if not os.path.isfile(filein):
@@ -2570,16 +2571,10 @@ else:
                 if not '--sample' in dict_opts.keys():
                     print 'Error: please specify either input file using --sample'
                 else:
-                    if '--sample' in dict_opts.keys():
-                        bam_path='/'.join(dict_opts['--sample'].split('/')[:-1])+'/'
-                        bam_files=[dict_opts['--sample']]
-                    else:
-                        bam_path=path_modify(dict_opts['--PathBam'])
-                        bam_files=[]
-                        for file1 in os.listdir(bam_path):
-                            if file1.split('.')[-1]=='bam':
-                                bam_files.append(bam_path+file1)
-                    ref_path=workdir+'reference/'
+                    bam_path='/'.join(dict_opts['--sample'].split('/')[:-1])+'/'
+                    bam_files=[dict_opts['--sample']]
+                    bam_files_appdix=dict_opts['--sample'].split('.')[-1]
+                    ref_path=workdir+'reference_SVelter/'
                     ref_file=ref_path+'genome.fa'
                     ref_index=ref_file+'.fai'
                     if not os.path.isfile(ref_index):
@@ -2605,7 +2600,7 @@ else:
                                 time1=time.time()
                                 Null_Stats_Readin_One(NullPath,bamF,NullSplitLen_perc)
                                 for chrF in chromos:
-                                    bamF_Name=bamF.split('/')[-1].replace('.bam','')
+                                    bamF_Name=bamF.split('/')[-1].replace('.'+bam_files_appdix,'')
                                     floc_Name=BPPath+bamF_Name+'.'+chrF
                                     Refloc_name='.'.join(ref_file.split('.')[:-1])+'.Mappable.bed'
                                     stat_file_name(bamF_Name,genome_name)
@@ -4656,21 +4651,11 @@ else:
                 if not '--sample' in dict_opts.keys():
                     print 'Error: please specify either input file using --sample'
                 else:
-                    if '--sample' in dict_opts.keys():
-                        bam_path='/'.join(dict_opts['--sample'].split('/')[:-1])+'/'
-                        bam_files=[dict_opts['--sample']]
-                        bam_names=[dict_opts['--sample'].split('/')[-1].replace('.bam','')]
-                    else:
-                        bam_path=dict_opts['--PathBam']
-                        if not bam_path[-1]=='/':
-                            bam_path+='/'
-                        bam_files=[]
-                        bam_names=[]
-                        for file in os.listdir(bam_path):
-                            if file.split('.')[-1]=='bam':
-                                bam_files.append(bam_path+file)
-                                bam_names.append(file.replace('.bam',''))
-                    ref_path=workdir+'reference/'
+                    bam_path='/'.join(dict_opts['--sample'].split('/')[:-1])+'/'
+                    bam_files=[dict_opts['--sample']]
+                    bam_files_appdix=dict_opts['--sample'].split('.')[-1]
+                    bam_names=[dict_opts['--sample'].split('/')[-1].replace('.'+bam_files_appdix,'')]
+                    ref_path=workdir+'reference_SVelter/'
                     ref_file=ref_path+'genome.fa'
                     ref_index=ref_file+'.fai'
                     if not os.path.isfile(ref_index):
@@ -5497,16 +5482,6 @@ else:
                                     out[k1][j]=[]
                                 if len(chr_letter_bp[k1][j])==4:
                                     bl1=chr_letter_bp[k1][j][1:-1]
-                                    if bl1[0]>bl2[0]-1 and bl1[1]<bl2[1]+1:
-                                        out[k1][j]+=RD_hash[k1][k2][(bl1[0]-bl2[0])/Window_Size:(bl1[1]-bl2[0])/Window_Size+1]
-                                    elif bl1[0]>bl2[0]-1 and bl1[1]>bl2[1]:
-                                        out[k1][j]+=RD_hash[k1][k2][(bl1[0]-bl2[0])/Window_Size:]
-                                    elif bl1[0]<bl2[0] and bl1[1]<bl2[1]+1:
-                                        out[k1][j]+=RD_hash[k1][k2][:(bl1[1]-bl2[0])/Window_Size+1]
-                                    elif bl1[0]<bl2[0] and bl1[1]>bl2[1]:
-                                        out[k1][j]+=RD_hash[k1][k2]
-                                elif len(chr_letter_bp[k1][j])==2:
-                                    bl1=chr_letter_bp[k1][j]
                                     if bl1[0]>bl2[0]-1 and bl1[1]<bl2[1]+1:
                                         out[k1][j]+=RD_hash[k1][k2][(bl1[0]-bl2[0])/Window_Size:(bl1[1]-bl2[0])/Window_Size+1]
                                     elif bl1[0]>bl2[0]-1 and bl1[1]>bl2[1]:
@@ -8601,52 +8576,9 @@ else:
                         GC_Mean_Coverage[x]=GC_Mean_Coverage[chrom_N]
                     if not x in GC_Std_Coverage.keys():
                         GC_Std_Coverage[x]=GC_Std_Coverage[chrom_N]
-            def RD_block_estimate_from_bam(bps):
-                #eg of bps:['chr1',1,10]
-                reads=0
-                start=int(bps[1])
-                end=int(bps[2])
-                fin=os.popen(r'''samtools view %s %s:%d-%d'''%(dict_opts['--sample'],bps[0],start,end))
-                for line in fin:
-                    pin=line.strip().split()
-                    if int(pin[3])>start and int(pin[3])<end-ReadLength:
-                        reads+=1
-                    if pin[6]=='=':
-                        if int(pin[7])>start and int(pin[7])<end-ReadLength:
-                            reads+=1
-                fin.close()
-                return float(reads)*float(ReadLength)/float(end-start)
-            def letter_RD_ReadIn_from_bam(chr_letter_bp):
-                Initial_GCRD_Adj_pre={}
-                for k1 in chr_letter_bp.keys():
-                    Initial_GCRD_Adj_pre[k1]={}
-                    for k2 in chr_letter_bp[k1].keys():
-                        Initial_GCRD_Adj_pre[k1][k2]=RD_block_estimate_from_bam([k1]+chr_letter_bp[k1][k2])
-                return Initial_GCRD_Adj_pre             
-            def letter_RD_ReadIn_Multi_source(chr_letter_bp):
-                temp1={}
-                temp2={}
-                for k1 in chr_letter_bp.keys():
-                    temp1[k1]={}
-                    temp2[k1]={}
-                    for k2 in chr_letter_bp[k1].keys():
-                        temp=chr_letter_bp[k1][k2]
-                        if temp[1]-temp[0]>500:
-                            temp1[k1][k2]=chr_letter_bp[k1][k2]
-                        else:
-                            temp2[k1][k2]=chr_letter_bp[k1][k2]
-                out1=letter_RD_ReadIn(temp1)
-                out2=letter_RD_ReadIn_from_bam(temp2)
-                for k1 in out2.keys():
-                    if not k1 in out1.keys():
-                        out1[k1]={}
-                    for k2 in out2[k1].keys():
-                        if not k2 in out1[k1].keys():
-                            out1[k1][k2]=out2[k1][k2]
-                return out1
             def copy_num_estimate_calcu(bps2):
                 chr_letter_bp=letter_rearrange(bps2)
-                Initial_GCRD_Adj_pre=letter_RD_ReadIn_Multi_source(chr_letter_bp)
+                Initial_GCRD_Adj_pre=letter_RD_ReadIn(letter_RD_test_calcu(chr_letter_bp))
                 global Initial_GCRD_Adj
                 Initial_GCRD_Adj={}
                 for k1 in Initial_GCRD_Adj_pre.keys():
@@ -8662,7 +8594,7 @@ else:
                             Copy_num_estimate[i]=-1
                 Copy_num_Check=[]
                 for CNE in Copy_num_estimate.keys():
-                    if Copy_num_estimate[CNE]>4 or Copy_num_estimate[CNE]==-1:
+                    if Copy_num_estimate[CNE]>4:
                         Copy_num_Check.append(CNE)
                 return [Copy_num_estimate,Copy_num_Check]
             def bps4_to_bps2(bps4):
@@ -8703,7 +8635,7 @@ else:
                         dict_opts['--out-path']='/'.join(dict_opts['--bp-file'].split('/')[:-1])
                     if not dict_opts['--out-path'][-1]=='/':
                         dict_opts['--out-path']+='/'
-                    ref_path=workdir+'reference/'
+                    ref_path=workdir+'reference_SVelter/'
                     ref_file=ref_path+'genome.fa'
                     ref_index=ref_file+'.fai'
                     ref_ppre=ref_path
@@ -8723,7 +8655,8 @@ else:
                                 print 'Error: please specify either input file using --sample'
                             else:
                                 time1=time.time()
-                                BamN=dict_opts['--sample'].split('/')[-1].replace('.bam','')
+                                bam_files_appdix=dict_opts['--sample'].split('.')[-1]
+                                BamN=dict_opts['--sample'].split('/')[-1].replace('.'+bam_files_appdix,'')
                                 Input_File=dict_opts['--bp-file']
                                 Insert_Len_Stat=workdir+'NullModel.'+dict_opts['--sample'].split('/')[-1]+'/ILNull.'+BamN+'.'+genome_name+'.Bimodal'
                                 if not os.path.isfile(Insert_Len_Stat):
@@ -8742,7 +8675,7 @@ else:
                                             pin=line.strip().split()
                                         fin.close()
                                         ReadLength=int(pin[-1].split(':')[-1])
-                                    Initial_Bam_Name=BamN+'.bam'
+                                    Initial_Bam_Name=BamN+'.'+bam_files_appdix
                                     Initial_Bam=dict_opts['--sample']
                                     flank=cdf_solver_application(Insert_Len_Stat,0.95)
                                     Cut_Lower=cdf_solver_application(Insert_Len_Stat,0.005)
@@ -8848,7 +8781,7 @@ else:
                                                     ChrN_Median_Coverage[j]+=[GC_Median_Coverage[i][j]]
                                         GC_RD_Info_Complete(ref_file)
                                         for bpsk1 in sorted(bps_hash.keys()):
-                                            for bps2 in bps_hash[bpsk1][1:2]:
+                                            for bps2 in bps_hash[bpsk1]:
                                                 print bps2
                                                 if qual_check_bps2(bps2)=='right':
                                                     Chromo=bps2[0][0]
@@ -9429,6 +9362,16 @@ else:
                                                         else:
                                                             Score_rec_hash={}
                                                             bps_new={}
+                                                            #Initial_DR=Full_Info[2]
+                                                            #Initial_IL=Full_Info[3]
+                                                            #Initial_Info=Full_Info[4]+Full_Info[5]+Full_Info[6]
+                                                            #BlockGC=Full_Info[7]
+                                                            #BlockGC['left']=0.476
+                                                            #BlockGC['right']=0.476
+                                                            #BlockGC2={}
+                                                            #for key_B_GC in BlockGC.keys():
+                                                            #    BlockGC2[key_B_GC]=BlockGC[key_B_GC]
+                                                            #    BlockGC2[key_B_GC+'^']=BlockGC[key_B_GC]    
                                                             temp_Full_Info=original_bp_let_produce(chr_letter_bp,bps2)
                                                             original_letters=temp_Full_Info[1]
                                                             original_bp_list=temp_Full_Info[0]
@@ -9437,8 +9380,8 @@ else:
                                                                     for blk2 in sorted(chr_letter_bp[blk1].keys()):
                                                                         if blk2==bl:
                                                                             bps2_temp=[blk1]+[chr_letter_bp[blk1][blk2][0],chr_letter_bp[blk1][blk2][-1]]
-                                                                            copy_num_a=max([0,int(Copy_num_estimate[bl])/2])
-                                                                            copy_num_b=max([0,Copy_num_estimate[bl]-copy_num_a])
+                                                                            copy_num_a=int(Copy_num_estimate[bl])/2
+                                                                            copy_num_b=Copy_num_estimate[bl]-copy_num_a
                                                                             Best_Letter_Rec=[[['a' for i in range(copy_num_a)],['a' for i in range(copy_num_a)]]]
                                                                             Best_Score_Rec=100
                                                                             write_best_letter([bps2_temp],Best_Letter_Rec,Best_Score_Rec,Score_rec_hash,original_letters)
@@ -11568,7 +11511,7 @@ else:
                                 for fi2 in os.listdir(path1):
                                     path2=path1+fi2+'/'
                                     InputPath.append(path2)
-                    ref_path=workdir+'reference/'
+                    ref_path=workdir+'reference_SVelter/'
                     ref_file=ref_path+'genome.fa'
                     ref_index=ref_file+'.fai'
                     if '--reference' in dict_opts.keys():
@@ -11766,13 +11709,13 @@ else:
                 if '--copyneutral' in dict_opts.keys():
                     cn2_file=dict_opts['--copyneutral']
                 else:
-                    cn2_file=workdir+'reference/CN2.bed'
+                    cn2_file=workdir+'reference_SVelter/CN2.bed'
                 return cn2_file
             def ex_file_read_in():
                 if '--exclude' in dict_opts.keys():
                     ex_file=dict_opts['--exclude']
                 else:
-                    ex_file=workdir+'reference/Exclude.bed'
+                    ex_file=workdir+'reference_SVelter/Exclude.bed'
                 return ex_file
             def cn2_length_read_in():
                 if '--null-copyneutral-length' in dict_opts.keys():
@@ -11823,7 +11766,7 @@ else:
                 Code3_Function='BPIntegrate'
                 Code4_Function='SVPredict'
                 Code5_Function='SVIntegrate'
-                RCode_Path=workdir+'reference/'
+                RCode_Path=workdir+'reference_SVelter/'
                 Code1a_file=RCode_Path+'SVelter1.NullModel.Figure.a.r'
                 Code1d_file=RCode_Path+'SVelter1.NullModel.Figure.b.r'
                 Code1d2_file=RCode_Path+'SVelter1.NullModel.Figure.c.r'
@@ -11851,13 +11794,14 @@ else:
                     if '--sample' in dict_opts.keys():
                         bam_path='/'.join(dict_opts['--sample'].split('/')[:-1])+'/'
                         bam_files=[dict_opts['--sample']]
+                        bam_files_appdix=dict_opts['--sample'].split('.')[-1]
                     else:
                         bam_path=path_modify(dict_opts['--samplePath'])
                         bam_files=[]
                         for file in os.listdir(bam_path):
-                            if file.split('.')[-1]=='bam':
+                            if file.split('.')[-1]==bam_files_appdix:
                                 bam_files.append(bam_path+file)
-                    ref_path=workdir+'reference/'
+                    ref_path=workdir+'reference_SVelter/'
                     ref_file=ref_path+'genome.fa'
                     ref_index=ref_file+'.fai'
                     if not os.path.isfile(ref_index):
@@ -11884,7 +11828,7 @@ else:
                                     chr_bam_check.append(pin[1].split(':')[1])
                             fin.close()
                         if not chr_ref_check==chr_bam_check:
-                            print 'Warning: please make sure the reference file matches the bam'
+                            print 'Warning: please make sure the reference file matches the sample file'
                         chr_flag=0
                         if 'chr' in chr_ref_check[0]:
                             chr_flag=1
@@ -11923,8 +11867,8 @@ else:
                             out_vcf=dict_opts['--prefix']+'.vcf'
                             out_svelter=dict_opts['--prefix']+'.svelter'
                         else:
-                            out_vcf=workdir+dict_opts['--sample'].split('/')[-1].replace('.bam','.vcf')
-                            out_svelter=workdir+dict_opts['--sample'].split('/')[-1].replace('.bam','.svelter')
+                            out_vcf=workdir+dict_opts['--sample'].split('/')[-1].replace('.'+bam_files_appdix,'.vcf')
+                            out_svelter=workdir+dict_opts['--sample'].split('/')[-1].replace('.'+bam_files_appdix,'.svelter')
                             print 'Warning: output file is not specified'
                             print 'output file: '+out_vcf
                             print 'output file: '+out_svelter
@@ -11939,7 +11883,7 @@ else:
                         for sin_bam_file in bam_files:
                             running_time=[]
                             print ' '
-                            print 'Step1: Running null parameters for '+sin_bam_file.split('/')[-1].replace('.bam','')+' ...'
+                            print 'Step1: Running null parameters for '+sin_bam_file.split('/')[-1].replace('.'+bam_files_appdix,'')+' ...'
                             time1=time.time()
                             if len(chromos)>1:
                                 run_SVelter1_chrom(sin_bam_file)
@@ -11947,10 +11891,10 @@ else:
                                 run_SVelter1_Single_chrom(sin_bam_file,chromos[0])
                             time2=time.time()
                             running_time.append(time2-time1)
-                            print 'Null model built for '+sin_bam_file.split('/')[-1].replace('.bam','')
+                            print 'Null model built for '+sin_bam_file.split('/')[-1].replace('.'+bam_files_appdix,'')
                             print 'Time Consuming: '+str(datetime.timedelta(seconds=(time2-time1)))
                             print ' '
-                            print 'Step2: Searching for BreakPoints of sample '+sin_bam_file.split('/')[-1].replace('.bam','')+' ...'
+                            print 'Step2: Searching for BreakPoints of sample '+sin_bam_file.split('/')[-1].replace('.'+bam_files_appdix,'')+' ...'
                             time1=time.time()
                             for x in chromos:
                                 print x
@@ -11958,7 +11902,7 @@ else:
                                 print time.time()-time1
                             time2=time.time()
                             running_time.append(time2-time1)
-                            print 'Break points searching done for sample:'+sin_bam_file.split('/')[-1].replace('.bam','')
+                            print 'Break points searching done for sample:'+sin_bam_file.split('/')[-1].replace('.'+bam_files_appdix,'')
                             print 'Time Consuming: '+str(datetime.timedelta(seconds=(time2-time1)))
                             print ' '
                             print 'Step3: Integrating breakpoints ... '
@@ -11968,13 +11912,13 @@ else:
                             run_SVelter3_chrom(sin_bam_file)
                             time2=time.time()
                             running_time.append(time2-time1)
-                            print 'Break points cluster done for sample:'+sin_bam_file.split('/')[-1].replace('.bam','')
+                            print 'Break points cluster done for sample:'+sin_bam_file.split('/')[-1].replace('.'+bam_files_appdix,'')
                             print 'Time Consuming: '+str(datetime.timedelta(seconds=(time2-time1)))
                             print ' '
                             print 'Step4: Resolving structure ... '
                             time1=time.time()
                             for k1 in os.listdir(workdir+'bp_files.'+dict_opts['--sample'].split('/')[-1]+'/'):
-                                if k1==dict_opts['--sample'].split('/')[-1].replace('.bam',''):
+                                if k1==dict_opts['--sample'].split('/')[-1].replace('.'+bam_files_appdix,''):
                                     path1=workdir+'bp_files.'+dict_opts['--sample'].split('/')[-1]+'/'+k1+'/'
                                     for k2 in os.listdir(path1):
                                         path2=path1+k2+'/'
@@ -12009,4 +11953,3 @@ else:
                             os.system(r'''rm -r %s'''%(NullPath))
                             os.system(r'''rm -r %s'''%(BPPath))
                             os.system(r'''rm -r %s'''%(TXTPath))
-
