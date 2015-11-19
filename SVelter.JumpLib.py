@@ -1320,7 +1320,7 @@ else:
                                     RDNullfigure2='.'.join(RDNullTemp.split('.')[:-1])+'.NegativeBinomial'
                                     if KeepFigure in ['no','N','No','n']:
                                         RDNullfigure1=RDNullfigure1.replace('.pdf','.na')
-                                    os.system('''Rscript %s %s %s %s %s %s'''%(RFigureDRSplit2,RDNullTemp,RDNullfigure1,BoxPlotColor,lineColor,RDNullfigure2))
+                                    os.system('''Rscript %s %s %s %s %s %s %d'''%(RFigureDRSplit2,RDNullTemp,RDNullfigure1,BoxPlotColor,lineColor,RDNullfigure2,Window_Size))
                                     RDNullfigure2_Modify(RDNullfigure2)
                                     ILNullTemp=NullPath+'ILNull.'+'.'.join(bamF.split('/')[-1].split('.')[:-1])+'.'+genome_name+'.temp'
                                     fIL=open(ILNullTemp,'w')
@@ -1333,7 +1333,7 @@ else:
                                     ILNullfigure2='.'.join(ILNullTemp.split('.')[:-1])+'.Bimodal'
                                     if KeepFigure in ['no','N','No','n']:
                                         ILNullfigure1=ILNullfigure1.replace('.pdf','.na')
-                                    os.system('''Rscript %s %s %s %s %s %s'''%(RFigureDRSplit2,ILNullTemp,ILNullfigure1,BoxPlotColor,lineColor,ILNullfigure2))
+                                    os.system('''Rscript %s %s %s %s %s %s %d'''%(RFigureDRSplit2,ILNullTemp,ILNullfigure1,BoxPlotColor,lineColor,ILNullfigure2,Window_Size))
                                     TBNullTemp=NullPath+'TBNull.'+'.'.join(bamF.split('/')[-1].split('.')[:-1])+'.'+genome_name+'.temp'
                                     fTB=open(TBNullTemp,'w')
                                     for tb in TBNullDensity.keys():
@@ -1345,7 +1345,7 @@ else:
                                     TBNullfigure2='.'.join(TBNullTemp.split('.')[:-1])+'.Bimodal'
                                     if KeepFigure in ['no','N','No','n']:
                                         TBNullfigure1=TBNullfigure1.replace('.pdf','.na')
-                                    os.system('''Rscript %s %s %s %s %s %s'''%(RFigureDRSplit2,TBNullTemp,TBNullfigure1,BoxPlotColor,lineColor,TBNullfigure2))
+                                    os.system('''Rscript %s %s %s %s %s %s %d'''%(RFigureDRSplit2,TBNullTemp,TBNullfigure1,BoxPlotColor,lineColor,TBNullfigure2,Window_Size))
                                     clean_files()
                                     Ref_Seq_File=ref_file
                                     Mini_CN2_Region=int(cn2_length)

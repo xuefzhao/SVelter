@@ -795,6 +795,17 @@ else:
                 os.system('''rm  %s'''%(ILNullTemp))
                 os.system('''rm  %s'''%(TBNullTemp))
                 os.system('''rm  %s'''%(RDNullTemp))
+            def RDNullTemp_Modify(RDNullTemp):
+                data=[]
+                fin=open(RDNullTemp)
+                for line in fin:
+                    pin=line.strip().split()
+                    data.append([float(pin[0])/Window_Size,pin[1]])
+                fin.close()
+                fo=open(RDNullfigure2,'w')
+                for x in data:
+                    print >>fo, ' '.join([str(i) for i in data])
+                fo.close()
             def RDNullfigure2_Modify(RDNullfigure2):
                 fin=open(RDNullfigure2)
                 pin1=fin.readline().strip().split()
@@ -1321,7 +1332,7 @@ else:
                                     RDNullfigure2='.'.join(RDNullTemp.split('.')[:-1])+'.NegativeBinomial'
                                     if KeepFigure in ['no','N','No','n']:
                                         RDNullfigure1=RDNullfigure1.replace('.pdf','.na')
-                                    os.system('''Rscript %s %s %s %s %s %s'''%(RFigureDRSplit2,RDNullTemp,RDNullfigure1,BoxPlotColor,lineColor,RDNullfigure2))
+                                    os.system('''Rscript %s %s %s %s %s %s %d'''%(RFigureDRSplit2,RDNullTemp,RDNullfigure1,BoxPlotColor,lineColor,RDNullfigure2,Window_Size))
                                     RDNullfigure2_Modify(RDNullfigure2)
                                     ILNullTemp=NullPath+'ILNull.'+'.'.join(bamF.split('/')[-1].split('.')[:-1])+'.'+genome_name+'.temp'
                                     fIL=open(ILNullTemp,'w')
@@ -1334,7 +1345,7 @@ else:
                                     ILNullfigure2='.'.join(ILNullTemp.split('.')[:-1])+'.Bimodal'
                                     if KeepFigure in ['no','N','No','n']:
                                         ILNullfigure1=ILNullfigure1.replace('.pdf','.na')
-                                    os.system('''Rscript %s %s %s %s %s %s'''%(RFigureDRSplit2,ILNullTemp,ILNullfigure1,BoxPlotColor,lineColor,ILNullfigure2))
+                                    os.system('''Rscript %s %s %s %s %s %s %d'''%(RFigureDRSplit2,ILNullTemp,ILNullfigure1,BoxPlotColor,lineColor,ILNullfigure2,Window_Size))
                                     TBNullTemp=NullPath+'TBNull.'+'.'.join(bamF.split('/')[-1].split('.')[:-1])+'.'+genome_name+'.temp'
                                     fTB=open(TBNullTemp,'w')
                                     for tb in TBNullDensity.keys():
@@ -1346,7 +1357,7 @@ else:
                                     TBNullfigure2='.'.join(TBNullTemp.split('.')[:-1])+'.Bimodal'
                                     if KeepFigure in ['no','N','No','n']:
                                         TBNullfigure1=TBNullfigure1.replace('.pdf','.na')
-                                    os.system('''Rscript %s %s %s %s %s %s'''%(RFigureDRSplit2,TBNullTemp,TBNullfigure1,BoxPlotColor,lineColor,TBNullfigure2))
+                                    os.system('''Rscript %s %s %s %s %s %s %d'''%(RFigureDRSplit2,TBNullTemp,TBNullfigure1,BoxPlotColor,lineColor,TBNullfigure2,Window_Size))
                                     clean_files()
                                     Ref_Seq_File=ref_file
                                     Mini_CN2_Region=int(cn2_length)
