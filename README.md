@@ -35,7 +35,7 @@ Pre-indexed files of certain reference genomes have been produced and kept under
 ###Attention:
 1. reference file should have been indexed by calling samtools first:  `samtools faidx ref.fasta`
 2. working directory is required to be writable for temporal files 
-3. if sample file is large (eg. >50X whole genome sequencing), it is recommended that these parameters `<--null-copyneutral-length 5000 --null-copyneutral-perc 0.01>` added to your command. These two parameter decides the number and size of CN2 regions extracted for building null model.
+3. with large sample size (eg. >50X whole genome sequencing), it is recommended that these parameters `--null-copyneutral-perc 0.01` added to your command; with small ones (eg. <10x), `--null-copyneutral-perc 0.5` is recommended.   This parameter decides the number of CN2 regions extracted for building null model.
 
 
 ##Usage
