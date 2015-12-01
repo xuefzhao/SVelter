@@ -12,16 +12,16 @@ Window_Size=Args[11]
 outputFileType=strsplit(outputname,'[.]')[[1]][length(strsplit(outputname,'[.]')[[1]])]
 dataNull=read.table(file=NullModel,header=F)
 dataNull=dataNull[order(dataNull[,1],decreasing=F),]
-if(sum(dataNull[,2])>2^31-1){
-    shrink=int(sum(dataNull[,2])/2^31-1)+3
+if(sum(dataNull[,2])>2^18-1){
+    shrink=as.integer(sum(dataNull[,2])/2^18-1)+3
     dataNull[,2]=dataNull[,2]/shrink
     }
-MedianData=median(dataNull[,1])
-for(i in nrow(dataNull):1){
-    if(dataNull[i,1]>3*MedianData){
-        dataNull=dataNull[-i,]
-    }
-    }
+#MedianData=median(dataNull[,1])
+#for(i in nrow(dataNull):1){
+#    if(dataNull[i,1]>3*MedianData){
+#        dataNull=dataNull[-i,]
+#    }
+#    }
 StatType=strsplit(strsplit(NullModel,'/')[[1]][length(strsplit(NullModel,'/')[[1]])],'[.]')[[1]][1]
 
 if (StatType=='RDNull'){
@@ -39,8 +39,9 @@ if (StatType=='RDNull'){
     xrange=range(min(data_RD),max(data_RD))
     break_num=as.integer(nrow(dataNull)/2)
     if (nrow(dataNull)>500){        break_num=as.integer(nrow(dataNull)/5)}
-    hist( data_RD,xaxt='n',freq=F,col=boxcolor,breaks=break_num,xlab='Read Depth',ylab='Frequency',cex.main=0.8,main='Fitted by Normal')
-    lines(seq(range(data_RD)[1],range(data_RD)[2],1),dnorm(seq(range(data_RD)[1],range(data_RD)[2],1),RD_Mean,RD_STD),type='l',lwd=2,col=linecolor)
+    data_RD3=data_RD[data_RD<3*RD_Mean]
+    hist(data_RD3,xaxt='n',freq=F,col=boxcolor,breaks=break_num,xlab='Read Depth',ylab='Frequency',cex.main=0.8,main='Fitted by Normal')
+    lines(seq(range(data_RD3)[1],range(data_RD3)[2],1),dnorm(seq(range(data_RD3)[1],range(data_RD3)[2],1),RD_Mean,RD_STD),type='l',lwd=2,col=linecolor)
     axis(1,c(xrange[1],xrange[1]+(xrange[2]-xrange[1])/4,xrange[1]+(xrange[2]-xrange[1])/2,xrange[1]+3*(xrange[2]-xrange[1])/4,xrange[2]),round(c(xrange[1],xrange[1]+(xrange[2]-xrange[1])/4,xrange[1]+(xrange[2]-xrange[1])/2,xrange[1]+3*(xrange[2]-xrange[1])/4,xrange[2])/as.double(Window_Size),digits=2))
     dev.off()
     StatMatrix=data.frame(Mean=RD_Mean,Median=RD_Median,STD=RD_STD)
@@ -65,10 +66,10 @@ if (StatType=='ILNull'){
     cex_main=0.9
     break_num=as.integer(nrow(dataNull)/2)
     if (nrow(dataNull)>500){        break_num=as.integer(nrow(dataNull)/5)}
-    xrange=c(min(data_IL)*0.9,max(data_IL)*1.1)
+    xrange=range(min(data_IL)*0.9,min(max(data_IL)*1.1,IL_Mean*3))
     yrange=c(0,max(dnorm(seq(range(data_IL)[1],range(data_IL)[2],1),IL_Normal_Mean,IL_Normal_STD))*1.2)
     plot(xrange,yrange,type='n',frame.plot=F,xlab='Insert Length',ylab='Frequency',main='Fitted By Normal')
-    hist(data_IL,freq=F,col=boxcolor,breaks=break_num,xlim=xrange,add=T)
+    hist(data_IL2,freq=F,col=boxcolor,breaks=break_num,xlim=xrange,add=T)
     lines(seq(range(data_IL)[1],range(data_IL)[2],1),dnorm(seq(range(data_IL)[1],range(data_IL)[2],1),IL_Normal_Mean,IL_Normal_STD),type='l',lwd=2,col=linecolor)
     dev.off()
     StatMatrix1=data.frame(Mean=IL_Mean, Median=IL_Median, STD=IL_STD)
@@ -100,10 +101,10 @@ if (StatType=='TBNull'){
     cex_main=0.9
     break_num=as.integer(nrow(dataNull)/2)
     if (nrow(dataNull)>500){        break_num=as.integer(nrow(dataNull)/5)}
-    xrange=c(min(data_TB)*0.9,max(data_TB)*1.1)
+    xrange=range(min(data_TB)*0.9,min(max(data_TB)*1.1,TB_Mean*3))
     yrange=c(0,max(dnorm(seq(range(data_TB)[1],range(data_TB)[2],1),TB_Normal_Mean,TB_Normal_STD))*1.2)
     plot(xrange,yrange,type='n',frame.plot=F,xlab='Physical Coverage',ylab='Frequency',main='Fitted By Normal')
-    hist(data_TB,freq=F,col=boxcolor,breaks=break_num,xlim=xrange,add=T)
+    hist(data_TB2,freq=F,col=boxcolor,breaks=break_num,xlim=xrange,add=T)
     lines(seq(range(data_TB)[1],range(data_TB)[2],1),dnorm(seq(range(data_TB)[1],range(data_TB)[2],1),TB_Normal_Mean,TB_Normal_STD),type='l',lwd=2,col=linecolor)
     dev.off()
     StatMatrix1=data.frame(Mean=TB_Mean, Median=TB_Median, STD=TB_STD)
