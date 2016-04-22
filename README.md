@@ -63,7 +63,7 @@ svelter.py  [options]  [parameters]
 	--workdir, writable working directory.
 	--reference, absolute path of reference genome. eg: .../svelter/reference/genome.fa
 	--support, folder containing all supportive file including: Exclude.bed,CN2.bed,Segdup.bed
-
+```
  #####Optional Parameters:
 ```
 	--ref-index, folders containin pre-indexed files, if applicable. For certain versions of human genome, the indexed files are availabel from https://github.com/mills-lab/svelter.
