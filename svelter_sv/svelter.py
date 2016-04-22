@@ -131,6 +131,7 @@ else:
                 #print 'Error: please specify working directory using --workdir'
             else:
                 workdir = path_modify(dict_opts['--workdir'])
+                path_mkdir(workdir)
             ref_file=0
             if not '--reference' in dict_opts.keys():
                 print 'Error: please specify refrence genome using --reference'
@@ -150,24 +151,33 @@ else:
                         ref_path=workdir+'reference_SVelter/'
                         if not ref_path=='/'.join(ref_file.split('/')[:-1])+'/':
                             ref_path=workdir+'reference_SVelter/'
-                            if not os.path.isdir(ref_path):
-                                os.system(r'''mkdir %s'''%(ref_path))
-                            #os.system(r'''ln -s %s %s'''%(dict_opts['--svelter-path']+'/SVelter*.r',ref_path))  
-                            os.system(r'''ln -s %s %s'''%(ref_file,ref_path+'genome.fa'))
-                            os.system(r'''ln -s %s %s'''%(ref_index,ref_path+'genome.fa.fai'))
+                            path_mkdir(ref_path)
+                            if not ref_file[0]=='/':
+                                print 'Error: refrence should be specified using absolute path ! '
+                            os.symlink(ref_file,ref_path+'genome.fa')
+                            os.symlink(ref_index,ref_path+'genome.fa.fai')
                             if '--ref-index' in dict_opts.keys():
                                 if os.path.isdir(dict_opts['--ref-index']):
                                     ref_index_path=path_modify(dict_opts['--ref-index'])
                                     for ref_index_file in os.listdir(ref_index_path):
                                         if ref_index_file.split('.')[-1]=='GC_Content':
-                                            os.system(r'''ln -s %s %s'''%(ref_index_path+ref_index_file,ref_path+'genome.GC_Content'))
+                                            if ref_index_path[0]=='/':
+                                                os.symlink(ref_index_path+ref_index_file,ref_path+'genome.GC_Content')
+                                            else:
+                                                os.system(r'''cp %s %s'''%(ref_index_path+ref_index_file,ref_path+'genome.GC_Content'))
                                         if ref_index_file.split('.')[-1]=='bed' and ref_index_file.split('.')[-2]=='Mappable':
-                                            os.system(r'''ln -s %s %s'''%(ref_index_path+ref_index_file,ref_path+'genome.Mappable.bed'))
+                                            if ref_index_path[0]=='/':
+                                                os.symlink(ref_index_path+ref_index_file,ref_path+'genome.Mappable.bed')
+                                            else:
+                                                os.system(r'''cp %s %s'''%(ref_index_path+ref_index_file,ref_path+'genome.Mappable.bed'))
                             if '--support' in dict_opts.keys():
                                 support_path=path_modify(dict_opts['--support'])
                                 for k1 in os.listdir(support_path):
                                     if 'SVelter' in k1 and k1.split('.')[-1]=='r':
-                                        os.system(r'''ln -s %s %s'''%(support_path+k1,ref_path))                                        
+                                        if support_path[0]=='/':
+                                            os.symlink(support_path+k1,ref_path+k1)
+                                        else:
+                                            os.system(r'''cp %s %s'''%(support_path+k1,ref_path))                                        
                                     if 'CN2' in k1:
                                         if not '--copyneutral' in dict_opts.keys():
                                             dict_opts['--copyneutral']=support_path+k1
@@ -178,20 +188,26 @@ else:
                                         if not '--segdup' in dict_opts.keys():
                                             dict_opts['--segdup']=support_path+k1
                             if '--copyneutral' in dict_opts.keys():
-                                os.system(r'''ln -s %s %s'''%(dict_opts['--copyneutral'],ref_path+'CN2.bed'))
+                                if dict_opts['--copyneutral'][0]=='/':
+                                    os.symlink(dict_opts['--copyneutral'],ref_path+'CN2.bed')
+                                else:
+                                    os.system(r'''cp %s %s'''%(dict_opts['--copyneutral'],ref_path+'CN2.bed'))
                             else:
                                 [whole_genome,len_genome]=calculate_len_genome(ref_file)
                                 random_produce_cn2_region(ref_path+'CN2.bed',whole_genome,len_genome,dict_opts)
                             if '--exclude' in dict_opts.keys():
-                                os.system(r'''ln -s %s %s'''%(dict_opts['--exclude'],ref_path+'Exclude.bed'))
+                                if dict_opts['--exclude'][0]=='/':
+                                    os.symlink(dict_opts['--exclude'],ref_path+'Exclude.bed')
+                                else:
+                                    os.system(r'''cp %s %s'''%(dict_opts['--exclude'],ref_path+'Exclude.bed'))
                             else:
                                 chromos=chromos_readin_list(ref_file)
                                 random_produce_exclude_region(ref_path+'Exclude.bed',chromos)
                             if '--segdup' in dict_opts.keys():
-                                os.system(r'''ln -s %s %s'''%(dict_opts['--segdup'],ref_path+'Segdup.bed'))
-                                #print 'symbolic link of reference genome built under '+ref_path
-                                #print 'symbolic link of CN file built under '+ref_path
-                                #print 'symbolic link of Exclude file built under '+ref_path  
+                                if dict_opts['--segdup'][0]=='/':
+                                    os.symlink(dict_opts['--segdup'],ref_path+'Segdup.bed')
+                                else:
+                                    os.system(r'''cp %s %s'''%(dict_opts['--segdup'],ref_path+'Segdup.bed'))
                         ref_file=ref_path+'genome.fa'
                         ref_index=ref_file+'.fai'
                         ExcludeBed=ref_path+'Exclude.bed'
@@ -254,7 +270,7 @@ else:
                                 fout.close()
                                 fout2.close()
                         time2=time.time()
-                        print 'Reference Genome Indexed !'
+                        print 'Suppport files completely set !'
                         print 'Time Consuming:'+str(time2-time1)
     if function_name=='NullModel':
         import glob
