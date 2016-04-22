@@ -1,7 +1,7 @@
 #SVelter
 
 ##Description
-This software is designed to identify both simple and complex rearrangements from paired-end sequencing data. Users could ran it easily by just alling *SVelter.py* with proper parameters. It's also possible to ran it on multiple cores by calling different sub-functions separately.
+This software is designed to identify both simple and complex rearrangements from paired-end sequencing data. Users could ran it easily by just alling *svelter.py* with proper parameters. It's also possible to ran it on multiple cores by calling different sub-functions separately.
 
 ##Required third-party resources
 ```
@@ -19,11 +19,11 @@ python setup.py install --user
 ```
 Setup working directory:
 ``` 
-SVelter.py Setup --reference reference.fa --workdir /working/directory/ --support /folder/containing/supportive/files/ --ref-index /folder/containing/preindexed/files/
+svelter.py Setup --reference reference.fa --workdir /working/directory/ --support /folder/containing/supportive/files/ --ref-index /folder/containing/preindexed/files/
 ```
-Run SVelter with its default setting:
+Run svelter with its default setting:
 ```
-SVelter.py --sample /absolute/path/of/sample.bam --workdir /working/directory/
+svelter.py --sample /absolute/path/of/sample.bam --workdir /working/directory/
 ```
 
 ###Required files:
@@ -43,7 +43,7 @@ Pre-indexed files of certain reference genomes have been produced and kept under
 
 
 ##Usage
-SVelter.py  [options]  [parameters]
+svelter.py  [options]  [parameters]
 
 ###Options:
 ```
@@ -61,7 +61,7 @@ SVelter.py  [options]  [parameters]
 #####Required Parameters:
 ```
 	--workdir, writable working directory.
-	--reference, absolute path of reference genome. eg: .../SVelter/reference/genome.fa
+	--reference, absolute path of reference genome. eg: .../svelter/reference/genome.fa
 	--support, folder containing all supportive file including: Exclude.bed,CN2.bed,Segdup.bed
 
  #####Optional Parameters:
@@ -106,11 +106,11 @@ SVelter.py  [options]  [parameters]
 ```
 
 
-###For faster processing, SVelter could run with multiple cores:
+###For faster processing, svelter could run with multiple cores:
 
 ####Step1: Build null models:
 ```
-SVelter.py NullModel --sample /absolute/path/of/sample.bam --workdir /working/directory
+svelter.py NullModel --sample /absolute/path/of/sample.bam --workdir /working/directory
 ```
 
 ```
@@ -137,7 +137,7 @@ Optional Parameters:
 
 ####Step2: Search for Breakpoints:
 ```
-SVelter.py BPSearch --sample /absolute/path/of/sample.bam --workdir /working/directory
+svelter.py BPSearch --sample /absolute/path/of/sample.bam --workdir /working/directory
 ```
 
 ```
@@ -162,7 +162,7 @@ Optional Parameters:
 
 ####Step3: Cluster Breakpoints:
 ```
-SVelter.py BPIntegrate --sample /absolute/path/of/sample.bam --workdir /working/directory
+svelter.py BPIntegrate --sample /absolute/path/of/sample.bam --workdir /working/directory
 ```
 
 ```
@@ -175,7 +175,7 @@ Optional Parameters:
 
 ####Step4: Resolve complex structural variants:
 ```
-SVelter.py SVPredict --sample sample.bam --workdir /working/directory --bp-file input/file/containing/clustered/bps
+svelter.py SVPredict --sample sample.bam --workdir /working/directory --bp-file input/file/containing/clustered/bps
  ```
  
  ```
@@ -192,7 +192,7 @@ Optional Parameters:
 
 ####Step5: Write output in vcf format:
 ```
-SVelter.py SVIntegrate --workdir /working/directory --prefix output  --input-path path/of/output/from/Step4
+svelter.py SVIntegrate --workdir /working/directory --prefix output  --input-path path/of/output/from/Step4
 ```
 
 ```
@@ -200,3 +200,4 @@ Optional Parameters:
 
 --qc-structure, minimum quality score of a resolved structure to be considered as PASS and included in the output vcf file
 ```
+
