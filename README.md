@@ -15,22 +15,26 @@ Download and Install
 ```
 git clone git@github.com:mills-lab/svelter.git
 cd svelter
-chmod +x SVelter.py
-cp SVelter.py your/bin/directory/
+python setup.py install --user
 ```
-Index Reference genome
+Setup working directory:
 ``` 
-SVelter.py Setup --reference reference.fa --workdir /working/directory --exclude exclude.ref.bed --copyneutral CN2.ref.bed --ref-index indexed-ref/ --svelter-path SVelter/ 
+SVelter.py Setup --reference reference.fa --workdir /working/directory/ --support /folder/containing/supportive/files/ --ref-index /folder/containing/preindexed/files/
 ```
 Run SVelter with its default setting:
 ```
-SVelter.py --sample /absolute/path/of/sample.bam --workdir /working/directory
+SVelter.py --sample /absolute/path/of/sample.bam --workdir /working/directory/
 ```
 
 ###Required files:
-`exclude.ref.bed` and `CN2.ref.bed` are available from the folder *Support* for some versions of reference genome. Users could replace with their custom version as long as both are in bed format. For more details, please see *Support*. 
+`Exclude.ref.bed`, `CN2.ref.bed` and `Segdup.ref.bed` are available under *Support* for some versions of human reference genome. 
+'Exclude.ref.bed' specifies the genomic regions to be excluded from SV analysis;
+`CN2.ref.bed` specifies the copy neutral genomic regions where SVs are rarely reported;
+`Segdup.ref.bed` specifieds predefined segmental duplications in reference genome; will be excluded from analysis;
 
-Pre-indexed files of certain reference genomes have been produced and kept under folder *index-ref*. For specific reference, if not pre-indexed files provided, the optional parameter '--ref-index' could be omit and the indexed files would be produced through the setup step. 
+Customized versions could be used, as long as they are in bed format, collected in the same folder, and named in the same format.For more details, please see *Support*. 
+
+Pre-indexed files of certain reference genomes have been produced and kept under folder */Support/Index-ref*. For specific reference, if not pre-indexed files provided, the optional parameter '--ref-index' could be omit and the indexed files would be produced through the setup step. 
 
 ###Attention:
 1. reference file should have been indexed by calling samtools first:  `samtools faidx ref.fasta`
@@ -43,63 +47,62 @@ SVelter.py  [options]  [parameters]
 
 ###Options:
 ```
-  Setup
-  NullModel
-  BPSearch
-  BPIntegrate
-  SVPredict
-  SVIntegrate
+    Setup
+    Clean
+    NullModel
+    BPSearch
+    BPIntegrate
+    SVPredict
+    SVIntegrate
 ```
 
 ###Parameters:
 ####For `Setup`:
 #####Required Parameters:
 ```
---workdir, writable working directory.
---reference, absolute path of reference genome. eg: .../SVelter/reference/genome.fa
---exclude, absolute path of bed file indicating regions to be excluded from analysis. If not provided, no mappable regions will be excluded.
---copyneutral,absolute, path of bed file indicating copy neutural regions based on which null statistical models would be built. If not provided, genome would be randomly sampled for null model.
---svelter-path, folder which contains all SVelter scripts.
+	--workdir, writable working directory.
+	--reference, absolute path of reference genome. eg: .../SVelter/reference/genome.fa
+	--support, folder containing all supportive file including: Exclude.bed,CN2.bed,Segdup.bed
+
+ #####Optional Parameters:
 ```
-#####Optional Parameters:
+	--ref-index, folders containin pre-indexed files, if applicable. For certain versions of human genome, the indexed files are availabel from https://github.com/mills-lab/svelter.
 ```
---ref-index, folders containin pre-indexed files, if applicable. For certain versions of human genome, the indexed files are availabel from https://github.com/mills-lab/svelter.
-```
-####For other step:
+
+####For other steps:
 #####Required:
 ```
-  --workdir, writable working directory.
-  
-  --sample, input alignment file in bam format
+	--workdir, writable working directory.
+	--sample, input alignment file in bam format
 ```
 
 #####Optional:
 ```
---null-model, specify which stat model to be fitted on each parameter. if --null-model==C / Complex, negative bimodal distribution will be fitted to insertlenth; else, normal will be used
+	--null-model, specify which stat model to be fitted on each parameter. if --null-model==C / Complex, negative bimodal distribution will be fitted to insertlenth; else, normal will be used
 
---null-copyneutral-length, minimum length requirement for --copyneutral regions used to build null model (default: 2000)
+	--null-copyneutral-length, minimum length requirement for --copyneutral regions used to build null model (default: 2000)
 
---null-copyneutral-perc, percentage of regions from --copyneutral to utilize (default: 0.1)
+	--null-copyneutral-perc, percentage of regions from --copyneutral to utilize (default: 0.1)
 
---null-random-length, specify the length of random regions if --copyneutral parameter not used (default: 5000)
+	--null-random-length, specify the length of random regions if --copyneutral parameter not used (default: 5000)
 
---null-random-num, specify the number of random regions if --copyneutral parameter not used (default: 10000)
+	--null-random-num, specify the number of random regions if --copyneutral parameter not used (default: 10000)
 
---num-iteration, maximum number of iterations per structure will run in SV predicting step
+	--num-iteration, maximum number of iterations per structure will run in SV predicting step
 
---qc-map-cutoff, the minimum mapping quality required for a breakpoint to be reported (default: 0.0)
+	--qc-map-cutoff, the minimum mapping quality required for a breakpoint to be reported (default: 0.0)
 
---qc-align, minimum alignment quality required for mapped reads in bam file (default: 20)
+	--qc-align, minimum alignment quality required for mapped reads in bam file (default: 20)
 
---qc-split, minimum alighment of clipped parts of reads considered as a soft clip (default: 20)
+	--qc-split, minimum alighment of clipped parts of reads considered as a soft clip (default: 20)
 
---qc-structure, minimum quality score of a resolved structure to be considered as PASS and included in the output vcf file
+	--qc-structure, minimum quality score of a resolved structure to be considered as PASS and included in the output vcf file
 
---split-min-len, the minumum length of clip read considered as split; (default:10% of read length)
+	--split-min-len, the minumum length of clip read considered as split; (default:10% of read length)
 
---prefix, output prefix for vcf and svelter files (default: input.vcf, input.svelter)
+	--prefix, output prefix for vcf and svelter files (default: input.vcf, input.svelter)
 
---ploidy, limit algorithm to specific zygosity (0:heterozygous only; 1:homozygous only; 2:both; default:2)
+	--ploidy, limit algorithm to specific zygosity (0:heterozygous only; 1:homozygous only; 2:both; default:2)
 ```
 
 
@@ -197,4 +200,3 @@ Optional Parameters:
 
 --qc-structure, minimum quality score of a resolved structure to be considered as PASS and included in the output vcf file
 ```
-
