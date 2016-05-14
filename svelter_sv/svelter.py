@@ -2442,8 +2442,9 @@ else:
                                         bps_hash[i][key_bps_hash].append(file1)
                                         bps_hash[i][key_bps_hash].append(key_bps_hash+'.SPs')
                             for S_Sample in bps_hash.keys():
+                                [LN_list,all_SPs]=[{},{}]
                                 for chromo_name in bps_hash[S_Sample].keys():
-                                    [LN_list,all_SPs]=SP_LN_info_ReadIn(bps_in_path+bps_hash[S_Sample][chromo_name][0],bps_in_path+bps_hash[S_Sample][chromo_name][1])
+                                    [LN_list,all_SPs]=SP_LN_info_ReadIn(LN_list,all_SPs,bps_in_path+bps_hash[S_Sample][chromo_name][0],bps_in_path+bps_hash[S_Sample][chromo_name][1])
                                 for chromo_name in LN_list.keys():
                                     if not LN_list[chromo_name]==[]:
                                         if chromo_name in all_SPs.keys():
@@ -2461,11 +2462,8 @@ else:
                                             if dict_opts['--batch']=='0':
                                                 write_bp_2a(LN_LN_Merge,bps_folder,chromo_name,S_Sample)
                                             else:
-                                                global file_length
                                                 file_length=int(dict_opts['--batch'])
-                                                global file_index
-                                                file_index=0
-                                                write_bp_3a(LN_LN_Merge,file_index,bps_folder,file_length,chromo_name,S_Sample)
+                                                file_index=write_bp_3a(LN_LN_Merge,bps_folder,file_length,chromo_name,S_Sample)
                                 LN_bps_write(bps_hash,bps_folder,S_Sample,dict_opts,chromos,allchromos,bps_in_path)
                             time2=time.time()
                             print 'BPIntegrate Complete !'
@@ -4722,7 +4720,6 @@ else:
                                 RD_NB_Stat=NullPath+'RDNull.'+BamN+'.'+genome_name+'.NegativeBinomial'
                                 global RD_Weight
                                 RD_Weight=Insert_len_stat_readin(Insert_Len_Stat)/RD_NB_stat_readin(RD_NB_Stat)
-                                print 'RD_Weight: '+str(RD_Weight)
                                 if not os.path.isfile(Insert_Len_Stat):
                                     print 'Error: cannot access file: '+Insert_Len_Stat
                                 else:
@@ -4844,9 +4841,9 @@ else:
                                         [chrom_N,chrom_X,chrom_Y,GC_Median_Coverage,GC_Overall_Median_Coverage,GC_Var_Coverage,GC_Mean_Coverage,GC_Std_Coverage]=GC_RD_Info_Complete(ref_file,GC_Median_Coverage,ChrN_Median_Coverage,GC_Overall_Median_Coverage,GC_Var_Coverage,GC_Mean_Coverage,GC_Std_Coverage,Chromosome)
                                         GC_para_dict={'IL_Statistics':IL_Statistics,'GC_Overall_Median_Coverage':GC_Overall_Median_Coverage,'GC_Overall_Median_Num':GC_Overall_Median_Num,'GC_Median_Coverage':GC_Median_Coverage,'GC_Median_Num':GC_Median_Num,'GC_Mean_Coverage':GC_Mean_Coverage,'GC_Std_Coverage':GC_Std_Coverage,'GC_Var_Coverage':GC_Var_Coverage,'Coverage':Coverage}
                                         for bpsk1 in sorted(bps_hash.keys()):
+                                            if bpsk1>50: continue
                                             for bps2_new in bps_hash[bpsk1]:
                                                 bps2=LN_bps2_Modify(bps2_new,chromos_all)
-                                                #print bps2
                                                 if len(bps2)>0 and qual_check_bps2(bps2)=='right':
                                                     Chromo=bps2[0][0]
                                                     if not str(Chromo) in GC_Std_Coverage.keys(): continue
@@ -7402,7 +7399,7 @@ else:
     if not function_name in ['BPSearch_Predefined','PredefinedBP','Setup','NullModel','BPSearch','BPIntegrate','SVPredict','SVIntegrate','Clean']:
         import glob
         import getopt
-        opts,args=getopt.getopt(sys.argv[1:],'o:h:S:',['deterministic-flag=','help=','long-insert=','prefix=','batch=','sample=','workdir=','reference=','chromosome=','exclude=','copyneutral=','ploidy=','svelter-path=','input-path=','null-model=','null-copyneutral-length=','null-copyneutral-perc=','null-random-length=','null-random-num=','null-random-length=','null-random-num=','qc-align=','qc-split=','qc-structure=','qc-map-tool=','qc-map-file=','split-min-len=','read-length=','keep-temp-files=','keep-temp-figs=','bp-file=','num-iteration='])
+        opts,args=getopt.getopt(sys.argv[1:],'o:h:S:',['deterministic-flag=','help=','long-insert=','prefix=','batch=','sample=','workdir=','reference=','chromosome=','exclude=','copyneutral=','ploidy=','svelter-path=','input-path=','null-model=','null-copyneutral-length=','null-copyneutral-perc=','null-random-length=','null-random-num=','null-random-length=','null-random-num=','qc-align=','qc-split=','qc-structure=','qc-map-tool=','qc-map-file=','split-min-len=','read-length=','keep-temp-files=','keep-temp-figs=','bp-file=','num-iteration=','keep-interval-files='])
         dict_opts=dict(opts)
         if dict_opts=={} or dict_opts.keys()==['-h'] or dict_opts.keys()==['--help']:
             readme.print_default_parameters()
@@ -7696,6 +7693,11 @@ else:
                         NullPath=workdir+'NullModel.'+dict_opts['--sample'].split('/')[-1]
                         BPPath=workdir+'BreakPoints.'+dict_opts['--sample'].split('/')[-1]
                         TXTPath=workdir+'bp_files.'+dict_opts['--sample'].split('/')[-1]
-                        clean_path(NullPath)
-                        clean_path(BPPath)
-                        clean_path(TXTPath)
+                        if not '--keep-interval-files' in dict_opts.keys():
+                            clean_path(NullPath)
+                            clean_path(BPPath)
+                            clean_path(TXTPath)
+                        elif dict_opts['--keep-interval-files']=='FALSE':
+                            clean_path(NullPath)
+                            clean_path(BPPath)
+                            clean_path(TXTPath)                            
