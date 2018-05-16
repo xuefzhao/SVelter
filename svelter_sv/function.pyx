@@ -2083,7 +2083,7 @@ def modify_bps2_new(bps2_new):
         for k2 in bps2_new:
             if not k2[0] in list(out1.keys()):
                 out1[k2[0]]=[]
-            out1[k2[0]]+=k2[1:]
+            out1[k2[0]]+=[i for i in k2[1:] if str(i).isdigit()]
         out=[]
         for x in list(out1.keys()):
             out_temp=sorted([int(i) for i in out1[x]])

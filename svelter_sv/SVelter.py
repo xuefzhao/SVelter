@@ -4238,6 +4238,40 @@ else:
                      if(len(i)<3): return 1
                      if int(i[2])-int(i[1])>cff: flag+=1
                 return flag
+            def bp_input_readin(Input_File,chromos_all):
+                fi=open(Input_File)
+                bps_hash={}
+                bps_temp=[]
+                break_flag=0
+                for line in fi:
+                    pi=line.strip().split()
+                    if pi==[] or len(pi)<3:
+                        if bps_temp==[]:    continue
+                        else:
+                            bp_key=0
+                            for l1 in bps_temp: bp_key+=len(l1)
+                            if not bp_key in list(bps_hash.keys()): bps_hash[bp_key]=[]
+                            bps_hash[bp_key].append(bps_temp)
+                            bps_temp=[]
+                    else:       bps_temp.append(pi)
+                fi.close()
+                bps_hash_inter={}
+                for k1 in list(bps_hash.keys()):
+                    bps_hash_inter[k1]=[]
+                    for k2 in bps_hash[k1]:
+                        if not k2 in bps_hash_inter[k1]:        bps_hash_inter[k1].append(k2)
+                bps_hash=bps_hash_inter
+                bps_hash_out={}
+                for bpsk1 in sorted(bps_hash.keys()):
+                    bps_hash_out[bpsk1]=[]
+                    for bps2 in bps_hash[bpsk1]:
+                        bps_hash_out[bpsk1].append([])
+                        for i in bps2:
+                            i=[i[0]]+[j for j in i if not j in chromos_all]
+                            bps_hash_out[bpsk1][-1].append(i)
+                return bps_hash_out
+
+
             Define_Default_SVPredict()
             if not '--workdir' in list(dict_opts.keys()):    print('Error: please specify working directory using: --workdir')
             else:
@@ -4279,34 +4313,9 @@ else:
                                         IL_SD=((IL_Statistics[2]*IL_Statistics[4])**2+(IL_Statistics[3]*IL_Statistics[5])**2)**(0.5)
                                         IL_Penal_Two_End_Limit=min([pdf_calculate(IL_Estimate-3*IL_SD,IL_Statistics[4],IL_Statistics[0],IL_Statistics[1],IL_Statistics[2],IL_Statistics[3],Cut_Upper,Cut_Lower,Penalty_For_InsertLengthZero),pdf_calculate(IL_Estimate+3*IL_SD,IL_Statistics[4],IL_Statistics[0],IL_Statistics[1],IL_Statistics[2],IL_Statistics[3],Cut_Upper,Cut_Lower,Penalty_For_InsertLengthZero)])
                                         low_qual_edge=5
-                                        fi=open(Input_File)
-                                        bps_hash={}
-                                        bps_temp=[]
-                                        break_flag=0
-                                        for line in fi:
-                                            pi=line.strip().split()
-                                            if pi==[] or len(pi)<3:
-                                                if bps_temp==[]:    continue
-                                                else:
-                                                    bp_key=0
-                                                    for l1 in bps_temp: bp_key+=len(l1)
-                                                    if not bp_key in list(bps_hash.keys()): bps_hash[bp_key]=[]
-                                                    bps_hash[bp_key].append(bps_temp)
-                                                    bps_temp=[]
-                                            else:       bps_temp.append(pi)
-                                        fi.close()
-                                        bps_hash_inter={}
-                                        for k1 in list(bps_hash.keys()):
-                                            bps_hash_inter[k1]=[]
-                                            for k2 in bps_hash[k1]:
-                                                if not k2 in bps_hash_inter[k1]:        bps_hash_inter[k1].append(k2)
-                                        bps_hash=bps_hash_inter
+                                        bps_hash=bp_input_readin(Input_File, chromos_all)
                                         output_Score_File=dict_opts['--out-path']+'_'.join(dict_opts['--bp-file'].split('/')[-1].split('.')[:-1])+'.coverge'
                                         file_setup(output_Score_File)
-                                        for bpsk1 in sorted(bps_hash.keys()):
-                                            for bps2 in bps_hash[bpsk1]:
-                                                for i in bps2:
-                                                    if len(i)<3:    i.append(str(int(i[-1])+Window_Size))
                                         GC_Stat_Path=NullPath+'RD_Stat'
                                         Affix_GC_Stat='_MP'+str(QCAlign)+'_GC_Coverage_ReadLength'
                                         [GC_Content_Coverage,Chromosome,Coverage_0]=GC_Stat_ReadIn(BamN,GC_Stat_Path,genome_name,Affix_GC_Stat)
