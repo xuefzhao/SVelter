@@ -1,9 +1,9 @@
-#SVelter
+# SVelter
 
-##Description
+## Description
 This software is designed to identify both simple and complex rearrangements from paired-end sequencing data. Users could ran it easily by just alling *svelter.py* with proper parameters. It's also possible to ran it on multiple cores by calling different sub-functions separately.
 
-##Required third-party resources
+## Required third-party resources
 ```
 R:        https://www.r-project.org/
 python:   https://www.python.org/
@@ -26,7 +26,7 @@ Run svelter with its default setting:
 svelter.py --sample /absolute/path/of/sample.bam --workdir /working/directory/
 ```
 
-###Required files:
+### Required files:
 `Exclude.ref.bed`, `CN2.ref.bed` and `Segdup.ref.bed` are available under *Support* for some versions of human reference genome. 
 'Exclude.ref.bed' specifies the genomic regions to be excluded from SV analysis;
 `CN2.ref.bed` specifies the copy neutral genomic regions where SVs are rarely reported;
@@ -36,16 +36,16 @@ Customized versions could be used, as long as they are in bed format, collected 
 
 Pre-indexed files of certain reference genomes have been produced and kept under folder */Support/Index-ref*. For specific reference, if not pre-indexed files provided, the optional parameter '--ref-index' could be omit and the indexed files would be produced through the setup step. 
 
-###Attention:
+### Attention:
 1. reference file should have been indexed by calling samtools first:  `samtools faidx ref.fasta`
 2. working directory is required to be writable for temporal files 
 3. with large sample size (eg. >50X whole genome sequencing), it is recommended that these parameters `--null-copyneutral-perc 0.01` added to your command; with small ones (eg. <10x), `--null-copyneutral-perc 0.5` is recommended.   This parameter decides the number of CN2 regions extracted for building null model.
 
 
-##Usage
+## Usage
 svelter.py  [options]  [parameters]
 
-###Options:
+### Options:
 ```
     Setup
     Clean
@@ -56,27 +56,27 @@ svelter.py  [options]  [parameters]
     SVIntegrate
 ```
 
-###Parameters:
-####For `Setup`:
-#####Required Parameters:
+### Parameters:
+#### For `Setup`:
+##### Required Parameters:
 ```
 	--workdir, writable working directory.
 	--reference, absolute path of reference genome. eg: .../svelter/reference/genome.fa
 	--support, folder containing all supportive file including: Exclude.bed,CN2.bed,Segdup.bed
 ```
- #####Optional Parameters:
+ ##### Optional Parameters:
 ```
 	--ref-index, folders containin pre-indexed files, if applicable. For certain versions of human genome, the indexed files are availabel from https://github.com/mills-lab/svelter.
 ```
 
-####For other steps:
-#####Required:
+#### For other steps:
+##### Required:
 ```
 	--workdir, writable working directory.
 	--sample, input alignment file in bam format
 ```
 
-#####Optional:
+##### Optional:
 ```
 	--null-model, specify which stat model to be fitted on each parameter. if --null-model==C / Complex, negative bimodal distribution will be fitted to insertlenth; else, normal will be used
 
@@ -106,9 +106,9 @@ svelter.py  [options]  [parameters]
 ```
 
 
-###For faster processing, svelter could run with multiple cores:
+### For faster processing, svelter could run with multiple cores:
 
-####Step1: Build null models:
+#### Step1: Build null models:
 ```
 svelter.py NullModel --sample /absolute/path/of/sample.bam --workdir /working/directory
 ```
@@ -135,7 +135,7 @@ Optional Parameters:
 --split-min-len, the minumum length of clip read considered as split  (default:10% of read length)
 ```
 
-####Step2: Search for Breakpoints:
+#### Step2: Search for Breakpoints:
 ```
 svelter.py BPSearch --sample /absolute/path/of/sample.bam --workdir /working/directory
 ```
@@ -160,7 +160,7 @@ Optional Parameters:
 --qc-map-cutoff, the minimum mapping quality required for a breakpoint to be reported (default: 0.0)
 ```
 
-####Step3: Cluster Breakpoints:
+#### Step3: Cluster Breakpoints:
 ```
 svelter.py BPIntegrate --sample /absolute/path/of/sample.bam --workdir /working/directory
 ```
@@ -173,7 +173,7 @@ Optional Parameters:
 --batch, specify number of structures in each separate file (if 0, output files will be calssified by chromosomes; default, all BP clustered will be integrated in one txt file)
 ```
 
-####Step4: Resolve complex structural variants:
+#### Step4: Resolve complex structural variants:
 ```
 svelter.py SVPredict --sample sample.bam --workdir /working/directory --bp-file input/file/containing/clustered/bps
  ```
@@ -190,7 +190,7 @@ Optional Parameters:
 --qc-align, minimum alignment quality required for mapped reads in bam file (default: 20)
 ```
 
-####Step5: Write output in vcf format:
+#### Step5: Write output in vcf format:
 ```
 svelter.py SVIntegrate --workdir /working/directory --prefix output  --input-path path/of/output/from/Step4
 ```
